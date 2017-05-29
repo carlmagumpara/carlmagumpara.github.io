@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CLI - Carl Anthony Magumpara. 2017</title>
+  <style type="text/css">
+    /*Reset*/
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td,
+    article, aside, canvas, details, embed, 
+    figure, figcaption, footer, header, hgroup, 
+    menu, nav, output, ruby, section, summary,
+    time, mark, audio, video {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 100%;
+      font: inherit;
+      vertical-align: baseline;
+    }
+    article, aside, details, figcaption, figure, 
+    footer, header, hgroup, menu, nav, section {
+      display: block;
+    }
+    body {
+      line-height: 1;
+    }
+    ol, ul {
+      list-style: none;
+    }
+    blockquote, q {
+      quotes: none;
+    }
+    blockquote:before, blockquote:after,
+    q:before, q:after {
+      content: '';
+      content: none;
+    }
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="cli.css">
+  <script src="bower_components/vue/dist/vue.min.js"></script>
+</head>
+<body>
+  <div id="cli">
+    <div class="date_results_container">
+      <div class="data_results" v-for="data in data_results" v-html="data.data"></div>
+    </div>
+    <form @submit.prevent="processData">
+      <span class="carl-root"></span>
+      <input type="text" name="data-entry" class="data-entry" v-model="data_entry" autocomplete="off" @keyup.up="showHistoryUp" @keyup.down="showHistoryDown" autofocus>
+    </form>
+  </div>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
