@@ -5,7 +5,7 @@ $(document).ready(function(){
   })
   inputResize()
   function inputResize(){
-    carl_root = $('.carl-root').width()
+    carl_root = $('.carl-root').width() + 10
     screen_width = $(window).innerWidth()
     $('.data-entry').css('width', screen_width - carl_root)
   }
@@ -26,7 +26,7 @@ new Vue({
   el: '#cli',
   data: {
     data_entry: null,
-    data_results: [{
+    intro: [{
       data: 'CLI - Carl Anthony Magumpara. 2017'
     },
     {
@@ -42,10 +42,29 @@ new Vue({
       data: 'LinkedIn: <a href="https://www.linkedin.com/in/carl-anthony-magumpara-248a18125/" class="link" target="_blank">https://www.linkedin.com/in/carl-anthony-magumpara-248a18125/</a>'
     },
     {
-      data: 'Learn More: Type help'
+      data: 'Learn More: Type `help` to find out more available commands.'
     }],
+    data_results: [],
     data_history: [],
-    count_history: 0
+    count_history: 0,
+    ip_address: ''
+  },
+  created(){
+    vm = this
+    if (localStorage.data_results != null) {
+      vm.data_results = JSON.parse(localStorage.data_results)
+    } else {
+      this.data_results = this.intro
+    }
+    if (localStorage.data_history != null) {
+      vm.data_history = JSON.parse(localStorage.data_history)
+    }
+    if (localStorage.data_entry != null) {
+      vm.data_entry = localStorage.data_entry
+    }
+    $.get("https://ipinfo.io", function(response) {
+        vm.ip_address = response.ip
+    }, "jsonp")
   },
   methods: {
     processData(){
@@ -72,7 +91,7 @@ new Vue({
           promp = false
           if (data_entry === 'color') {
             promp = true
-            data = '<table><tr><td> 0 = Black </td> <td> 8 = Gray </td></tr><tr><td>1 = Blue </td> <td> 9 = Light Blue </td> </tr><tr><td> 2 = Green </td> <td> A = Light Green </td></tr><tr><td> 3 = Aqua </td> <td> B = Light Aqua </td></tr><tr><td> 4 = Red </td> <td> C = Light Red </td></tr><tr><td> 5 = Purple </td> <td> D = Light Purple </td></tr><tr><td> 6 = Yellow </td> <td>E = Light Yellow </td></tr><tr><td> 7 = White</td> <td> F = Bright White </td></tr><table>'
+            data = '<table><tr><td> 0 = Black </td> <td> 8 = Gray </td></tr><tr><td>1 = Blue </td> <td> 9 = Light Blue </td> </tr><tr><td> 2 = Green </td> <td> A = Light Green </td></tr><tr><td> 3 = Aqua </td> <td> B = Light Aqua </td></tr><tr><td> 4 = Red </td> <td> C = Light Red </td></tr><tr><td> 5 = Purple </td> <td> D = Light Purple </td></tr><tr><td> 6 = Yellow </td> <td>E = Light Yellow </td></tr><tr><td> 7 = White</td> <td> F = Bright White </td></tr><table> <br> Just type `color` + variable.'
           } else {
             text_color = data_entry.slice(6, Infinity)
             switch(text_color) {
@@ -140,7 +159,7 @@ new Vue({
           promp = false
           if (data_entry === 'background-color') {
             promp = true
-            data = '<table><tr><td> 0 = Black </td> <td> 8 = Gray </td></tr><tr><td>1 = Blue </td> <td> 9 = Light Blue </td> </tr><tr><td> 2 = Green </td> <td> A = Light Green </td></tr><tr><td> 3 = Aqua </td> <td> B = Light Aqua </td></tr><tr><td> 4 = Red </td> <td> C = Light Red </td></tr><tr><td> 5 = Purple </td> <td> D = Light Purple </td></tr><tr><td> 6 = Yellow </td> <td>E = Light Yellow </td></tr><tr><td> 7 = White</td> <td> F = Bright White </td></tr><table>'
+            data = '<table><tr><td> 0 = Black </td> <td> 8 = Gray </td></tr><tr><td>1 = Blue </td> <td> 9 = Light Blue </td> </tr><tr><td> 2 = Green </td> <td> A = Light Green </td></tr><tr><td> 3 = Aqua </td> <td> B = Light Aqua </td></tr><tr><td> 4 = Red </td> <td> C = Light Red </td></tr><tr><td> 5 = Purple </td> <td> D = Light Purple </td></tr><tr><td> 6 = Yellow </td> <td>E = Light Yellow </td></tr><tr><td> 7 = White</td> <td> F = Bright White </td></tr><table><br> Just type `background-color` + variable.'
           } else {
             text_color = data_entry.slice(17, Infinity)
             switch(text_color) {
@@ -205,9 +224,12 @@ new Vue({
           this.data_entry = ''
         }
         else {
+          promp = true
           switch(data_entry) {
             case 'clear':
+              promp = false
               this.data_results = []
+              this.data_history = []
               this.data_entry = ''
               this.count_history = 0
               break;
@@ -215,17 +237,29 @@ new Vue({
               data = 'exit'
               history.back()
               break;
+            case 'reset':
+              promp = false
+              this.data_results = this.intro
+              this.data_history = []
+              this.data_entry = ''
+              this.count_history = 0
+              break;
             case 'help':
-              data = ''
+              data = 'about: About this CLI. <br> history: Command history. <br> clear: Clear the screen. <br> reset: Reset CLI. <br> js + javascript code: You can test your javascript code here. just use console.log for the result. <br> ip: Show your IP address. <br> color: Setting for changing CLI text color. <br> background-color: Setting for changing CLI background color <br>'
+              break;
+            case 'ip':
+              data = this.ip_address
               break;
             case 'about':
-              data = 'Hi, I&#39;m Carl. As an experienced Web and Frontend Developer specializing in standard-based HTML, CSS and Javascript, I have developed an extraordinary passion in my field of work. My extensive experience in the use of Web Frameworks and Libraries such as Laravel, Ruby on Rails and VueJS helped me build a strong foundation in computer programming always being driven by my constant desire to create a web-based application that will benefit the community.'
+              data = 'This CLI (command-line user interface) is just only my personal use. It is written in HTML, JAVASCRIPT (VUE , JQUERY). <br> '
               break;
             case 'date':
+            case 'date now':
               date = new Date().toDateString();
               data = 'Date now is '+date
               break;
             case 'time':
+            case 'time now':
               time = new Date().toLocaleTimeString();
               data = 'Time now is '+time
               break;
@@ -237,14 +271,21 @@ new Vue({
               data = list
               break;
             default:
-              data = '<span class="carl-root"></span> <span class="error"></span>' 
+              data = '<span class="carl-root"></span><span class="error"> `'+this.data_entry+'` </span>' 
           }
-          data_results.push({ data: data })
+          if (promp) {
+            data_results.push({ data: data })
+          }
           this.data_entry = ''
         }
       } else {
         data_results.push({ data: '<span class="carl-root"></span>' })
       }
+      localStorage.data_results = JSON.stringify(this.data_results)
+      localStorage.data_history = JSON.stringify(this.data_history)
+    },
+    storeDataEntry(){
+      localStorage.data_entry = this.data_entry
     },
     showHistoryUp(){
       count_history = this.count_history
