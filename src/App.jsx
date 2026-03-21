@@ -16,6 +16,8 @@ import {
   SiTailwindcss,
 } from 'react-icons/si'
 import heroImg from './assets/avatar.jpg'
+import heroImg2 from './assets/avatar-1.png'
+import logoImg from './assets/logo.png'
 
 const resume = {
   name: 'Carl Anthony Magumpara',
@@ -88,7 +90,7 @@ const navItems = [
 const stats = [
   { value: '9+ yrs', label: 'Professional experience' },
   { value: 'Web + Mobile', label: 'Full-stack delivery' },
-  { value: 'Laravel • React', label: 'Primary stack' },
+  { value: 'Laravel • React (LNMP)', label: 'Primary stack' },
 ]
 
 const skillCards = [
@@ -322,10 +324,16 @@ function App() {
   return (
     <div className="bg-geo min-h-dvh text-slate-900 dark:text-white">
       <header className="sticky top-0 z-50 border-b border-slate-900/10 bg-white/40 dark:border-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-3 py-4 sm:px-4 lg:px-6">
           <a href="#home" className="flex items-center gap-3">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-sky-400 to-indigo-400 text-slate-950 shadow-[0_10px_30px_rgba(56,189,248,0.18)]">
-              <Icon name="spark" />
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-transparent text-slate-950 dark:bg-white">
+              <img
+                src={logoImg}
+                alt={`${resume.name} logo`}
+                className="h-7 w-7 object-contain"
+                loading="eager"
+                decoding="async"
+              />
             </span>
             <span className="leading-tight">
               <span className="block text-sm font-semibold text-slate-900 dark:text-white">{resume.username}</span>
@@ -440,7 +448,7 @@ function App() {
       </header>
 
       <main>
-        <section id="home" className="mx-auto max-w-7xl px-4 pt-14 sm:px-6 lg:px-8">
+        <section id="home" className="mx-auto max-w-screen-2xl px-3 pt-14 sm:px-4 lg:px-6">
           <div className="grid items-center gap-10 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <div className="pill">
@@ -481,44 +489,18 @@ function App() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/40 to-white/0 p-[1px]">
-                <div className="card rounded-3xl p-4">
-                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/40 to-white/5 dark:from-slate-900 dark:to-slate-950">
-                    <img
-                      src={heroImg}
-                      alt={`${resume.name} profile`}
-                      className="h-[360px] w-full object-contain p-6"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-[radial-gradient(600px_220px_at_50%_10%,rgba(56,189,248,0.18),transparent_60%)]" />
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                    <div className="text-sm font-semibold text-slate-900 dark:text-white">{resume.title}</div>
-                    <div className="pill">
-                      <Icon name="pin" />
-                      {resume.location}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid gap-2 text-xs text-slate-700 dark:text-slate-300">
-                    <div>
-                      <span className="text-slate-600 dark:text-slate-400">Email:</span> {resume.email}
-                    </div>
-                    <div>
-                      <span className="text-slate-600 dark:text-slate-400">Phone:</span> {resume.phone}
-                    </div>
-                    <div>
-                      <span className="text-slate-600 dark:text-slate-400">GitHub:</span>{' '}
-                      <a
-                        className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
-                        href={resume.github}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {resume.github.replace('https://', '')}
-                      </a>
-                    </div>
+              <div className="relative overflow-hidden rounded-3xl p-[1px]">
+                <div className="flex flex-col items-center justify-center gap-4 rounded-3xl p-6 sm:p-10">
+                  <img
+                    src={theme == 'dark' ? heroImg2 : heroImg}
+                    alt={`${resume.name} avatar`}
+                    className="h-80 w-64 rounded-3xl object-cover sm:h-96 sm:w-80 lg:h-[28rem] lg:w-96"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="pill">
+                    <Icon name="pin" />
+                    {resume.location}
                   </div>
                 </div>
               </div>
@@ -528,7 +510,7 @@ function App() {
           <div className="mt-14 border-t border-slate-900/10 dark:border-white/10" />
         </section>
 
-        <section id="skills" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section id="skills" className="mx-auto max-w-screen-2xl px-3 py-16 sm:px-4 lg:px-6">
           <div className="pill">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-500 dark:bg-sky-300" />
             SKILLS
@@ -555,7 +537,7 @@ function App() {
           </div>
         </section>
 
-        <section id="technology" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section id="technology" className="mx-auto max-w-screen-2xl px-3 py-16 sm:px-4 lg:px-6">
           <div className="pill">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />
             TECHNOLOGY
@@ -604,7 +586,7 @@ function App() {
           </div>
         </section>
 
-        <section id="experience" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section id="experience" className="mx-auto max-w-screen-2xl px-3 py-16 sm:px-4 lg:px-6">
           <div className="pill">
             <span className="h-1.5 w-1.5 rounded-full bg-sky-500 dark:bg-sky-300" />
             EXPERIENCE
@@ -637,7 +619,7 @@ function App() {
         </section>
 
 
-        <section id="contact" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section id="contact" className="mx-auto max-w-screen-2xl px-3 py-16 sm:px-4 lg:px-6">
           <div className="pill">
             <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />
             CONTACT
@@ -717,7 +699,7 @@ function App() {
         </section>
 
         <footer className="border-t border-slate-900/10 dark:border-white/10">
-          <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm sm:px-6 lg:grid-cols-12 lg:px-8">
+          <div className="mx-auto grid max-w-screen-2xl gap-8 px-3 py-12 text-sm sm:px-4 lg:grid-cols-12 lg:px-6">
             <div className="lg:col-span-5">
               <div className="text-sm font-semibold text-slate-900 dark:text-white">{resume.name}</div>
               <div className="mt-1 text-xs tracking-wide text-slate-600 dark:text-slate-400">{resume.title}</div>
