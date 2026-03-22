@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  SiBitbucket,
   SiBootstrap,
   SiFirebase,
   SiGit,
+  SiGithub,
+  SiGitlab,
+  SiJira,
   SiJavascript,
   SiLaravel,
   SiMysql,
@@ -12,9 +16,11 @@ import {
   SiReact,
   SiRedis,
   SiRedux,
+  SiRender,
   SiRubyonrails,
   SiSwagger,
   SiTailwindcss,
+  SiVercel,
 } from 'react-icons/si';
 import heroImg from '../assets/avatar.jpg';
 import heroImgDark from '../assets/avatar-dark.jpg';
@@ -33,6 +39,8 @@ const resume = {
   phone: '(+63) 950-780-3663',
   email: 'magumparacarlanthony@gmail.com',
   github: 'https://github.com/carlmagumpara',
+  linkedin: 'https://www.linkedin.com/in/carlmagumpara',
+  facebook: 'https://www.facebook.com/carlmagumpara',
   skills: [
     'Frontend/Backend Development',
     'Mobile Development (Cross Platform)',
@@ -41,23 +49,35 @@ const resume = {
     'Database Management',
     'Git Version Control',
   ],
-  tech: [
-    'Laravel (PHP)',
-    'JavaScript',
-    'Node.js',
-    'NGINX',
-    'React JS',
-    'Redux',
-    'React Native',
-    'Python',
-    'Ruby on Rails',
-    'MySQL',
-    'Redis',
-    'Firebase',
-    'Bootstrap',
-    'Tailwind CSS',
-    'RESTful APIs',
-    'Git',
+  techCategories: [
+    {
+      title: 'Languages',
+      items: ['JavaScript', 'Python'],
+    },
+    {
+      title: 'Frontend',
+      items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS'],
+    },
+    {
+      title: 'Backend',
+      items: ['Laravel (PHP)', 'Node.js', 'Ruby on Rails', 'RESTful APIs'],
+    },
+    {
+      title: 'Mobile',
+      items: ['React Native'],
+    },
+    {
+      title: 'Databases & BaaS',
+      items: ['MySQL', 'Redis', 'Firebase'],
+    },
+    {
+      title: 'DevOps & Hosting',
+      items: ['NGINX', 'Vercel', 'Render'],
+    },
+    {
+      title: 'VCS & Collaboration',
+      items: ['Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jira'],
+    },
   ],
   experience: [
     {
@@ -137,6 +157,7 @@ const skillCards = [
 const techLogoMeta = {
   'Laravel (PHP)': { Icon: SiLaravel, color: '#FF2D20' },
   'JavaScript (ES6)': { Icon: SiJavascript, color: '#F7DF1E' },
+  JavaScript: { Icon: SiJavascript, color: '#F7DF1E' },
   'Node.js': { Icon: SiNodedotjs, color: '#339933' },
   NGINX: { Icon: SiNginx, color: '#009639' },
   'React JS': { Icon: SiReact, color: '#61DAFB' },
@@ -152,6 +173,13 @@ const techLogoMeta = {
   'Tailwind CSS': { Icon: SiTailwindcss, color: '#06B6D4' },
   'RESTful APIs': { Icon: SiSwagger, color: '#85EA2D' },
   Git: { Icon: SiGit, color: '#F05032' },
+
+  GitHub: { Icon: SiGithub, color: '#94A3B8' },
+  GitLab: { Icon: SiGitlab, color: '#FC6D26' },
+  Bitbucket: { Icon: SiBitbucket, color: '#2684FF' },
+  Jira: { Icon: SiJira, color: '#0052CC' },
+  Vercel: { Icon: SiVercel, color: '#64748B' },
+  Render: { Icon: SiRender, color: '#46E3B7' },
 }
 
 function getTechAcronym(label) {
@@ -661,21 +689,63 @@ function App() {
             Tools I’ve used across backend, frontend, mobile, and database work.
           </p>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {resume.tech.map((t, idx) => (
-              <div
-                key={t}
-                className="card flex items-center gap-3 px-4 py-4"
-                title={t}
-                data-reveal
-                data-reveal-delay={idx * 35}
-              >
-                <TechLogo label={t} className="shrink-0" />
-                <div className="min-w-0">
-                  <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">{t}</div>
+          <div className="mt-8 grid gap-10">
+            {resume.techCategories.map((cat, catIdx) => (
+              <div key={cat.title}>
+                <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">
+                  {cat.title.toUpperCase()}
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {cat.items.map((t, idx) => (
+                    <div
+                      key={t}
+                      className="card flex items-center gap-3 px-4 py-4"
+                      title={t}
+                      data-reveal
+                      data-reveal-delay={catIdx * 180 + idx * 35}
+                    >
+                      <TechLogo label={t} className="shrink-0" />
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">{t}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="mt-10">
+            <div className="card p-6 sm:p-8" data-reveal data-reveal-delay={60}>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">GITHUB</div>
+                  <div className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">Contributions</div>
+                  <p className="mt-1 max-w-2xl text-sm text-slate-700 dark:text-slate-300">
+                    Recent activity from my GitHub profile.
+                  </p>
+                </div>
+                <a
+                  className="text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                  href={resume.github}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View profile →
+                </a>
+              </div>
+
+              <div className="mt-6 overflow-x-auto">
+                <img
+                  src={`https://ghchart.rshah.org/39d353/${resume.github.replace('https://github.com/', '')}`}
+                  alt={`${resume.name} GitHub contributions chart`}
+                  className="max-w-none"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="mt-14">
@@ -759,7 +829,13 @@ function App() {
               <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">DIRECT</div>
               <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                 <li>
-                  <span className="text-slate-600 dark:text-slate-400">Email:</span> {resume.email}
+                  <span className="text-slate-600 dark:text-slate-400">Email:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={`mailto:${resume.email}`}
+                  >
+                    {resume.email}
+                  </a>
                 </li>
                 <li>
                   <span className="text-slate-600 dark:text-slate-400">Phone:</span> {resume.phone}
@@ -776,6 +852,28 @@ function App() {
                     rel="noreferrer"
                   >
                     {resume.github.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">LinkedIn:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.linkedin.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">Facebook:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.facebook.replace('https://', '')}
                   </a>
                 </li>
               </ul>
@@ -857,7 +955,7 @@ function App() {
                     <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
                       MESSAGE
                     </label>
-                    <input 
+                    <textarea 
                       className="input mt-2 min-h-[140px] resize-y"
                       placeholder="Tell me about your project…"
                       name="message"
@@ -921,7 +1019,14 @@ function App() {
             <div className="lg:col-span-4">
               <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">CONTACT</div>
               <ul className="mt-3 space-y-2 text-slate-700 dark:text-slate-300">
-                <li>{resume.email}</li>
+                <li>
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={`mailto:${resume.email}`}
+                  >
+                    {resume.email}
+                  </a>
+                </li>
                 <li>{resume.phone}</li>
                 <li>{resume.location}</li>
                 <li>
@@ -932,6 +1037,26 @@ function App() {
                     rel="noreferrer"
                   >
                     {resume.github.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.linkedin.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.facebook.replace('https://', '')}
                   </a>
                 </li>
               </ul>
