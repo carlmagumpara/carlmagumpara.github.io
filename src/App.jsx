@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   SiBootstrap,
   SiFirebase,
@@ -14,10 +14,18 @@ import {
   SiRubyonrails,
   SiSwagger,
   SiTailwindcss,
-} from 'react-icons/si'
-import heroImg from './assets/avatar.jpg'
-import heroImg2 from './assets/avatar-1.png'
-import logoImg from './assets/logo.png'
+} from 'react-icons/si';
+import heroImg from './assets/avatar.jpg';
+import heroImg2 from './assets/avatar-1.png';
+import logoImg from './assets/logo.png';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+
+// AKfycbzo0-lJS30Q8TBJ-CjhYC4tjg5Z2FVfXbQgnJnHxf_sosd2OqhlJBf5p7K1BBSszJQ5
+
+// https://script.google.com/macros/s/AKfycbzo0-lJS30Q8TBJ-CjhYC4tjg5Z2FVfXbQgnJnHxf_sosd2OqhlJBf5p7K1BBSszJQ5/exec
 
 const resume = {
   name: 'Carl Anthony Magumpara',
@@ -282,11 +290,33 @@ function App() {
     } catch {
       return 'light'
     }
-  })
+  });
+
+  const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
+    try {
+      setSubmitting(true);
+      const response = await axios.post('https://script.google.com/macros/s/AKfycbxkoppzMetMlRVP9ydERwJRh82ilV8B57gVYjKrIPbmkmnf5LgReV8HVWuTCseBWsY/exec', 
+        values, 
+        {
+          headers: {
+            "Content-Type": "text/plain" // 👈 important!
+          }
+      });
+      toast('Message sent!');
+      resetForm();
+      setSubmitting(false);
+    } catch(error) {
+      console.log(error);
+      if (error.status === 422) {
+        setErrors(error.data.errors);
+      }
+      setSubmitting(false);
+    }
+  };
 
   const toggleTheme = () => {
     setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
-  }
+  };
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -295,7 +325,7 @@ function App() {
     } catch {
       // ignore
     }
-  }, [theme])
+  }, [theme]);
 
   useEffect(() => {
     const onResize = () => {
@@ -659,41 +689,111 @@ function App() {
             </div>
 
             <div className="card p-6 sm:p-8 lg:col-span-2">
-              <form className="grid gap-4" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
-                      NAME
-                    </label>
-                    <input className="input mt-2" placeholder="Your name" />
+              <Formik
+                initialValues={{ 
+                  name: '',
+                  email: '',
+                  message: '',
+                }}
+                validationSchema={Yup.object().shape({
+                  name: Yup.string().required('Required.'),
+                  email: Yup.string().required('Required.'),
+                  message: Yup.string().required('Required.'),
+                })}
+                onSubmit={onSubmit}
+                enableReinitialize={true} 
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  isSubmitting,
+                  setValues,
+                  setFieldValue
+               }) => (
+                  <form 
+                    onSubmit={handleSubmit} 
+                    autoComplete="new-password"
+                    className="grid gap-4"
+                  >
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
+                        NAME
+                      </label>
+                      <input 
+                        className="input mt-2"
+                        placeholder="Your name"
+                        name="name"
+                        value={values.name}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        autoComplete="new-password"
+                      />
+                      {errors.name && touched.name && (
+                        <span className="text-xs text-red-500 mt-1 block">
+                          {errors.name}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
+                        EMAIL
+                      </label>
+                      <input 
+                        type="email"
+                        className="input mt-2"
+                        placeholder="you@company.com"
+                        name="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        autoComplete="new-password"
+                      />
+                      {errors.email && touched.email && (
+                        <span className="text-xs text-red-500 mt-1 block">
+                          {errors.email}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
-                      EMAIL
+                      MESSAGE
                     </label>
-                    <input className="input mt-2" placeholder="you@company.com" type="email" />
+                    <input 
+                      className="input mt-2 min-h-[140px] resize-y"
+                      placeholder="Tell me about your project…"
+                      name="message"
+                      value={values.message}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      autoComplete="new-password"
+                    />
+                    {errors.message && touched.message && (
+                      <span className="text-xs text-red-500 mt-1 block">
+                        {errors.message}
+                      </span>
+                    )}
                   </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold tracking-widest text-slate-700 dark:text-slate-300">
-                    MESSAGE
-                  </label>
-                  <textarea
-                    className="input mt-2 min-h-[140px] resize-y"
-                    placeholder="Tell me about your project…"
-                  />
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                  <div className="text-xs text-slate-600 dark:text-slate-400">
-                    Available for full-stack web, API, and mobile development.
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <div className="text-xs text-slate-600 dark:text-slate-400">
+                      Available for full-stack web, API, and mobile development.
+                    </div>
+                    <button 
+                      className="btn-primary" 
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Please wait...' : 'Send message'}
+                    </button>
                   </div>
-                  <button className="btn-primary" type="submit">
-                    Send message
-                  </button>
-                </div>
-              </form>
+                </form>
+               )}
+              </Formik>    
             </div>
           </div>
         </section>
