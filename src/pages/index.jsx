@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   SiBootstrap,
   SiFirebase,
@@ -17,7 +17,7 @@ import {
   SiTailwindcss,
 } from 'react-icons/si';
 import heroImg from '../assets/avatar.jpg';
-import heroImg2 from '../assets/avatar-1.png';
+import heroImgDark from '../assets/avatar-dark.jpg';
 import logoImg from '../assets/logo.png';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -291,6 +291,8 @@ function Icon({ name, className }) {
 
 function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
+  const [revealTick, setRevealTick] = useState(0)
   const [theme, setTheme] = useState(() => {
     try {
       const stored = localStorage.getItem('theme')
@@ -310,6 +312,44 @@ function App() {
     const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
     el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
   }, [activeSection])
+
+  // Scroll reveal for cards (professional, low-motion, no extra deps)
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    if (prefersReducedMotion) return
+
+    const nodes = Array.from(document.querySelectorAll('[data-reveal]'))
+    if (nodes.length === 0) return
+
+    // Ensure hidden state on mount
+    nodes.forEach((el) => {
+      if (!el.getAttribute('data-reveal-state')) el.setAttribute('data-reveal-state', 'hidden')
+    })
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+
+          const el = entry.target
+          const delay = Number(el.getAttribute('data-reveal-delay') ?? '0')
+          window.setTimeout(() => {
+            el.setAttribute('data-reveal-state', 'visible')
+          }, delay)
+
+          observer.unobserve(el) // reveal once
+        }
+      },
+      { threshold: 0.14, rootMargin: '0px 0px -6% 0px' }
+    )
+
+    nodes.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [revealTick])
+
+  // Re-run reveal when the theme changes (DOM might change due to avatar swap etc.)
+  const bumpReveal = useMemo(() => () => setRevealTick((t) => t + 1), [])
 
   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
     try {
@@ -344,7 +384,9 @@ function App() {
     } catch {
       // ignore
     }
-  }, [theme]);
+
+    bumpReveal()
+  }, [theme, bumpReveal]);
 
   useEffect(() => {
     const onResize = () => {
@@ -390,16 +432,14 @@ function App() {
           </Link>
 
           <nav className="hidden items-center md:flex" aria-label="Primary">
-            <div className="flex flex-wrap items-center gap-6">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {navItems.map((item) => (
                 <Link
                   key={item.section}
                   to={item.to}
-                  className={
-                    item.section === activeSection
-                      ? 'text-xs font-semibold text-slate-900 underline decoration-slate-900/20 underline-offset-[10px] dark:text-white dark:decoration-white/30'
-                      : 'text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline hover:decoration-slate-900/20 hover:underline-offset-[10px] dark:text-slate-300 dark:hover:text-white dark:hover:decoration-white/20 dark:hover:underline-offset-[10px]'
-                  }
+                  className="nav-glass"
+                  data-active={item.section === activeSection}
+                  aria-current={item.section === activeSection ? 'page' : undefined}
                 >
                   {item.label}
                 </Link>
@@ -410,7 +450,7 @@ function App() {
           <div className="hidden items-center gap-2 md:flex">
             <button
               type="button"
-              className="btn-secondary px-3 py-2"
+              className="nav-glass-icon"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               onClick={toggleTheme}
             >
@@ -421,14 +461,14 @@ function App() {
           <div className="flex items-center gap-2 md:hidden">
             <Link
               to="/?section=contact"
-              className="btn-secondary px-3 py-2 text-xs"
+              className="nav-glass"
               onClick={() => setMobileNavOpen(false)}
             >
               Contact
             </Link>
             <button
               type="button"
-              className="btn-secondary px-3 py-2"
+              className="nav-glass-icon"
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               onClick={toggleTheme}
             >
@@ -436,7 +476,7 @@ function App() {
             </button>
             <button
               type="button"
-              className="btn-secondary px-3 py-2"
+              className="nav-glass-icon"
               aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileNavOpen}
               aria-controls="mobile-nav"
@@ -523,8 +563,13 @@ function App() {
               </p>
 
               <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {stats.map((s) => (
-                  <div key={s.label} className="card px-4 py-3">
+                {stats.map((s, idx) => (
+                  <div
+                    key={s.label}
+                    className="card px-4 py-3"
+                    data-reveal
+                    data-reveal-delay={idx * 60}
+                  >
                     <div className="text-lg font-semibold text-slate-900 dark:text-white">{s.value}</div>
                     <div className="mt-1 text-xs tracking-wide text-slate-600 dark:text-slate-400">{s.label}</div>
                   </div>
@@ -545,7 +590,7 @@ function App() {
               <div className="relative overflow-hidden rounded-3xl p-[1px]">
                 <div className="flex flex-col items-center justify-center gap-4 rounded-3xl p-6 sm:p-10">
                   <img
-                    src={theme == 'dark' ? heroImg2 : heroImg}
+                    src={theme === 'dark' ? heroImgDark : heroImg}
                     alt={`${resume.name} avatar`}
                     className="h-80 w-64 rounded-3xl object-cover sm:h-96 sm:w-80 lg:h-[28rem] lg:w-96"
                     loading="lazy"
@@ -576,8 +621,13 @@ function App() {
           </p>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            {skillCards.map((s) => (
-              <div key={s.title} className="card p-6">
+            {skillCards.map((s, idx) => (
+              <div
+                key={s.title}
+                className="card p-6"
+                data-reveal
+                data-reveal-delay={idx * 70}
+              >
                 <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
                   <span className="grid h-8 w-8 place-items-center rounded-xl bg-white/5 text-sky-300">
                     <Icon name="spark" />
@@ -603,8 +653,14 @@ function App() {
           </p>
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {resume.tech.map((t) => (
-              <div key={t} className="card flex items-center gap-3 px-4 py-4" title={t}>
+            {resume.tech.map((t, idx) => (
+              <div
+                key={t}
+                className="card flex items-center gap-3 px-4 py-4"
+                title={t}
+                data-reveal
+                data-reveal-delay={idx * 35}
+              >
                 <TechLogo label={t} className="shrink-0" />
                 <div className="min-w-0">
                   <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">{t}</div>
@@ -614,7 +670,7 @@ function App() {
           </div>
 
           <div className="mt-14">
-            <div className="card rounded-3xl p-8">
+            <div className="card rounded-3xl p-8" data-reveal data-reveal-delay={80}>
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(900px_420px_at_20%_20%,rgba(56,189,248,0.18),transparent_60%)]" />
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(800px_380px_at_90%_30%,rgba(99,102,241,0.18),transparent_60%)]" />
               <div className="relative flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
@@ -652,8 +708,13 @@ function App() {
           </p>
 
           <div className="mt-8 grid gap-4">
-            {resume.experience.map((job) => (
-              <div key={`${job.company}-${job.period}`} className="card p-6">
+            {resume.experience.map((job, idx) => (
+              <div
+                key={`${job.company}-${job.period}`}
+                className="card p-6"
+                data-reveal
+                data-reveal-delay={idx * 70}
+              >
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
                   <div className="text-sm font-semibold text-slate-900 dark:text-white">
                     {job.company}, {job.location}
@@ -685,7 +746,7 @@ function App() {
           </p>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            <div className="card p-6 lg:col-span-1">
+            <div className="card p-6 lg:col-span-1" data-reveal data-reveal-delay={40}>
               <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">DIRECT</div>
               <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
                 <li>
@@ -711,7 +772,7 @@ function App() {
               </ul>
             </div>
 
-            <div className="card p-6 sm:p-8 lg:col-span-2">
+            <div className="card p-6 sm:p-8 lg:col-span-2" data-reveal data-reveal-delay={100}>
               <Formik
                 initialValues={{ 
                   name: '',
