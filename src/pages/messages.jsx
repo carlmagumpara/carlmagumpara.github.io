@@ -85,12 +85,21 @@ function Messages() {
   const selfTo = `${location.pathname}${location.search}${location.hash}`;
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+    const root = document.documentElement;
+    root.classList.add('theme-transition');
+    root.classList.toggle('dark', theme === 'dark');
+
+    const timeout = window.setTimeout(() => {
+      root.classList.remove('theme-transition');
+    }, 450);
+
     try {
       localStorage.setItem('theme', theme);
     } catch {
       // ignore
     }
+
+    return () => window.clearTimeout(timeout);
   }, [theme]);
 
   const fetchMessages = useCallback(async ({ isRefresh = false, signal } = {}) => {

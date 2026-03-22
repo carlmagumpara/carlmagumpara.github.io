@@ -39,12 +39,33 @@
   body {
     font-family: var(--font-sans);
     color: var(--text-primary);
-    background: #f4f6ff;
+    background-color: #f4f6ff;
     @apply antialiased;
   }
 
   .dark body {
-    background: #07081a;
+    background-color: #07081a;
+  }
+
+  /* Theme transition (dark <-> light) */
+  html.theme-transition,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition-property: background-color, color, border-color, text-decoration-color, fill, stroke, opacity,
+      box-shadow, filter, backdrop-filter;
+    transition-duration: 240ms;
+    transition-delay: 90ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.theme-transition,
+    html.theme-transition *,
+    html.theme-transition *::before,
+    html.theme-transition *::after {
+      transition: none !important;
+    }
   }
 
   ::selection {
