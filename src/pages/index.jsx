@@ -10,6 +10,7 @@ import {
   SiNodedotjs,
   SiPython,
   SiReact,
+  SiRedis,
   SiRedux,
   SiRubyonrails,
   SiSwagger,
@@ -22,6 +23,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Link, useLocation } from 'react-router-dom';
 
 const resume = {
   name: 'Carl Anthony Magumpara',
@@ -41,7 +43,7 @@ const resume = {
   ],
   tech: [
     'Laravel (PHP)',
-    'JavaScript (ES6)',
+    'JavaScript',
     'Node.js',
     'NGINX',
     'React JS',
@@ -50,9 +52,10 @@ const resume = {
     'Python',
     'Ruby on Rails',
     'MySQL',
+    'Redis',
     'Firebase',
     'Bootstrap',
-    'Tailwind',
+    'Tailwind CSS',
     'RESTful APIs',
     'Git',
   ],
@@ -84,12 +87,19 @@ const resume = {
 }
 
 const navItems = [
-  { label: 'Home', href: '#home' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Technology', href: '#technology' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', section: 'home', to: '/?section=home' },
+  { label: 'Skills', section: 'skills', to: '/?section=skills' },
+  { label: 'Technology', section: 'technology', to: '/?section=technology' },
+  { label: 'Experience', section: 'experience', to: '/?section=experience' },
+  { label: 'Contact', section: 'contact', to: '/?section=contact' },
 ]
+
+const SECTION_IDS = new Set(navItems.map((item) => item.section))
+
+function getActiveSection(search) {
+  const section = new URLSearchParams(search).get('section')
+  return SECTION_IDS.has(section) ? section : 'home'
+}
 
 const stats = [
   { value: '9+ yrs', label: 'Professional experience' },
@@ -135,9 +145,11 @@ const techLogoMeta = {
   Python: { Icon: SiPython, color: '#3776AB' },
   'Ruby on Rails': { Icon: SiRubyonrails, color: '#CC0000' },
   MySQL: { Icon: SiMysql, color: '#4479A1' },
+  Redis: { Icon: SiRedis, color: '#DC382D' },
   Firebase: { Icon: SiFirebase, color: '#FFCA28' },
   Bootstrap: { Icon: SiBootstrap, color: '#7952B3' },
   Tailwind: { Icon: SiTailwindcss, color: '#06B6D4' },
+  'Tailwind CSS': { Icon: SiTailwindcss, color: '#06B6D4' },
   'RESTful APIs': { Icon: SiSwagger, color: '#85EA2D' },
   Git: { Icon: SiGit, color: '#F05032' },
 }
@@ -288,6 +300,17 @@ function App() {
     }
   });
 
+  const location = useLocation()
+  const activeSection = getActiveSection(location.search)
+
+  useEffect(() => {
+    const el = document.getElementById(activeSection)
+    if (!el) return
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    el.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' })
+  }, [activeSection])
+
   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
     try {
       setSubmitting(true);
@@ -351,7 +374,7 @@ function App() {
     <div className="bg-geo min-h-dvh text-slate-900 dark:text-white">
       <header className="sticky top-0 z-50 border-b border-slate-900/10 bg-white/40 dark:border-white/10 dark:bg-white/5 backdrop-blur-2xl backdrop-saturate-150">
         <div className="mx-auto flex max-w-screen-2xl items-center justify-between gap-4 px-3 py-4 sm:px-4 lg:px-6">
-          <a href="#home" className="flex items-center gap-3">
+          <Link to="/?section=home" className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-transparent text-slate-950 dark:bg-white">
               <img
                 src={logoImg}
@@ -364,22 +387,22 @@ function App() {
             <span className="leading-tight">
               <span className="block text-sm font-semibold text-slate-900 dark:text-white">{resume.username}</span>
             </span>
-          </a>
+          </Link>
 
           <nav className="hidden items-center md:flex" aria-label="Primary">
             <div className="flex flex-wrap items-center gap-6">
               {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
+                <Link
+                  key={item.section}
+                  to={item.to}
                   className={
-                    item.href === '#home'
+                    item.section === activeSection
                       ? 'text-xs font-semibold text-slate-900 underline decoration-slate-900/20 underline-offset-[10px] dark:text-white dark:decoration-white/30'
                       : 'text-xs font-semibold text-slate-600 hover:text-slate-900 hover:underline hover:decoration-slate-900/20 hover:underline-offset-[10px] dark:text-slate-300 dark:hover:text-white dark:hover:decoration-white/20 dark:hover:underline-offset-[10px]'
                   }
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
             </div>
           </nav>
@@ -396,9 +419,13 @@ function App() {
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <a href="#contact" className="btn-secondary px-3 py-2 text-xs" onClick={() => setMobileNavOpen(false)}>
+            <Link
+              to="/?section=contact"
+              className="btn-secondary px-3 py-2 text-xs"
+              onClick={() => setMobileNavOpen(false)}
+            >
               Contact
-            </a>
+            </Link>
             <button
               type="button"
               className="btn-secondary px-3 py-2"
@@ -442,12 +469,12 @@ function App() {
               <nav id="mobile-nav" className="mt-4" aria-label="Primary">
                 <ul className="grid gap-1">
                   {navItems.map((item) => (
-                    <li key={item.href}>
-                      <a
-                        href={item.href}
+                    <li key={item.section}>
+                      <Link
+                        to={item.to}
                         onClick={() => setMobileNavOpen(false)}
                         className={
-                          item.href === '#home'
+                          item.section === activeSection
                             ? 'flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-900 dark:text-white'
                             : 'flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-200 dark:hover:text-white'
                         }
@@ -455,7 +482,7 @@ function App() {
                         <span className="inline-flex items-center gap-2">
                           <span
                             className={
-                              item.href === '#home'
+                              item.section === activeSection
                                 ? 'h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-white'
                                 : 'h-1.5 w-1.5 rounded-full bg-slate-900/30 dark:bg-white/30'
                             }
@@ -463,7 +490,7 @@ function App() {
                           {item.label}
                         </span>
                         <span className="text-slate-500 dark:text-slate-500">→</span>
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -505,12 +532,12 @@ function App() {
               </div>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a href="#experience" className="btn-primary">
+                <Link to="/?section=experience" className="btn-primary">
                   View experience
-                </a>
-                <a href="#contact" className="btn-secondary">
+                </Link>
+                <Link to="/?section=contact" className="btn-secondary">
                   Contact
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -604,9 +631,9 @@ function App() {
                     and long-term maintainability.
                   </p>
                 </div>
-                <a href="#contact" className="btn-primary">
+                <Link to="/?section=contact" className="btn-primary">
                   Get in touch
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -809,10 +836,13 @@ function App() {
               <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">NAVIGATION</div>
               <ul className="mt-3 space-y-2">
                 {navItems.map((item) => (
-                  <li key={item.href}>
-                    <a className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white" href={item.href}>
+                  <li key={item.section}>
+                    <Link
+                      className="text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
+                      to={item.to}
+                    >
                       {item.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

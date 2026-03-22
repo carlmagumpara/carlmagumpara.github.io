@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { FiArrowLeft, FiDownload, FiMoon, FiRefreshCcw, FiSearch, FiSun } from 'react-icons/fi';
 import DataTable from '../shared/datatable';
@@ -40,6 +40,29 @@ const toCsv = (rows, headers) => {
   return [headers.join(','), ...rows.map((r) => headers.map((h) => escape(r?.[h])).join(','))].join('\n');
 };
 
+const ActionLink = ({ to, onAction, disabled = false, className = '', children, ...props }) => {
+  return (
+    <Link
+      to={to}
+      replace
+      {...props}
+      onClick={(e) => {
+        if (disabled) {
+          e.preventDefault();
+          return;
+        }
+        e.preventDefault();
+        onAction?.(e);
+      }}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : props.tabIndex}
+      className={`${className}${disabled ? ' pointer-events-none opacity-50' : ''}`}
+    >
+      {children}
+    </Link>
+  );
+};
+
 function Messages() {
   const [theme, setTheme] = useState(() => {
     try {
@@ -57,6 +80,9 @@ function Messages() {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('newest');
   const [lastUpdated, setLastUpdated] = useState(null);
+
+  const location = useLocation();
+  const selfTo = `${location.pathname}${location.search}${location.hash}`;
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -243,38 +269,38 @@ function Messages() {
                 </span>
               </Link>
 
-              <button
-                type="button"
+              <ActionLink
+                to={selfTo}
                 className="btn-secondary px-3 py-2"
-                onClick={() => fetchMessages({ isRefresh: true })}
+                onAction={() => fetchMessages({ isRefresh: true })}
                 disabled={loading || refreshing}
               >
                 <span className="inline-flex items-center gap-2">
                   <FiRefreshCcw className={refreshing ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
                   <span className="text-sm">Refresh</span>
                 </span>
-              </button>
+              </ActionLink>
 
-              <button
-                type="button"
+              <ActionLink
+                to={selfTo}
                 className="btn-secondary px-3 py-2"
-                onClick={onExportCsv}
+                onAction={onExportCsv}
                 disabled={loading || shownCount === 0}
               >
                 <span className="inline-flex items-center gap-2">
                   <FiDownload className="h-4 w-4" />
                   <span className="text-sm">Export</span>
                 </span>
-              </button>
+              </ActionLink>
 
-              <button
-                type="button"
+              <ActionLink
+                to={selfTo}
                 className="btn-secondary px-3 py-2"
                 aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-                onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+                onAction={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
               >
                 {theme === 'dark' ? <FiSun className="h-4 w-4" /> : <FiMoon className="h-4 w-4" />}
-              </button>
+              </ActionLink>
             </div>
           </div>
 
@@ -298,14 +324,14 @@ function Messages() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
+                    <ActionLink
+                      to={selfTo}
                       className="btn-secondary px-3 py-2 text-xs"
-                      onClick={() => setSort((s) => (s === 'newest' ? 'oldest' : 'newest'))}
+                      onAction={() => setSort((s) => (s === 'newest' ? 'oldest' : 'newest'))}
                       disabled={loading}
                     >
                       Sort: {sort === 'newest' ? 'Newest first' : 'Oldest first'}
-                    </button>
+                    </ActionLink>
 
                     <div className="text-xs text-slate-600 dark:text-slate-400">
                       Showing <span className="font-semibold text-slate-900 dark:text-white">{shownCount}</span> of{' '}
