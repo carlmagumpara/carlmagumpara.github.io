@@ -1,27 +1,36 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   SiBitbucket,
   SiBootstrap,
+  SiCss,
   SiFirebase,
   SiGit,
   SiGithub,
   SiGitlab,
+  SiGooglegemini,
+  SiHtml5,
   SiJira,
   SiJavascript,
   SiLaravel,
   SiMysql,
   SiNginx,
   SiNodedotjs,
+  SiOpenai,
   SiPython,
   SiReact,
   SiRedis,
   SiRedux,
   SiRender,
   SiRubyonrails,
+  SiSass,
   SiSwagger,
   SiTailwindcss,
+  SiUbuntu,
   SiVercel,
+  SiVite,
+  SiXcode,
 } from 'react-icons/si';
+import { DiVisualstudio } from 'react-icons/di';
 import heroImg from '../assets/avatar.jpg';
 import heroImgDark from '../assets/avatar-dark.jpg';
 import logoImg from '../assets/logo.png';
@@ -52,15 +61,15 @@ const resume = {
   techCategories: [
     {
       title: 'Languages',
-      items: ['JavaScript', 'Python'],
+      items: ['JavaScript', 'Python', 'HTML', 'CSS'],
     },
     {
       title: 'Frontend',
-      items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS'],
+      items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS', 'Vite JS', 'SASS'],
     },
     {
       title: 'Backend',
-      items: ['Laravel (PHP)', 'Node.js', 'Ruby on Rails', 'RESTful APIs'],
+      items: ['Laravel (PHP)', 'Node JS', 'Ruby on Rails', 'RESTful APIs'],
     },
     {
       title: 'Mobile',
@@ -77,6 +86,14 @@ const resume = {
     {
       title: 'VCS & Collaboration',
       items: ['Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jira'],
+    },
+    {
+      title: 'Tools & Platforms',
+      items: ['Visual Studio', 'Ubuntu', 'XCode'],
+    },
+    {
+      title: 'AI Tools',
+      items: ['Roo Code', 'ChatGPT', 'Gemini'],
     },
   ],
   experience: [
@@ -154,11 +171,51 @@ const skillCards = [
   },
 ]
 
+function RooCodeLogo({ className }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 200 200"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path fill="none" d="M0 0h200v200H0z"></path>
+      <path
+        fill="currentColor"
+        d="M104.7 62.98q1.996.596 3.987 1.208c.718.215 1.436.43 2.175.653q2.325.699 4.648 1.405 3.968 1.199 7.94 2.383a7102 7102 0 0 1 12.643 3.786c1.643.504 3.276 1.041 4.907 1.585l.438-3.812c.3-2.615.72-4.662 1.562-7.188 4.08 1.36 5.402 4.11 7.668 7.555a899.289 899.289 0 0 1 4.103 6.173 919 919 0 0 0 4.266 6.393q1.349 2.028 2.693 4.059l1.298 1.932C166 93.655 166 93.655 166 97c-5.248.547-8.799.507-13.187-2.625l-1.793-1.477c-3.08-1.37-4.936-.061-8.02 1.102-3.883 1.694-7.653 3.597-11.437 5.5l-3.065 1.453c-7.296 3.693-11.607 7.833-15.498 15.047l-1.358 2.416c-.935 3.765.353 5.48 2.19 8.838l.943 1.766c.996 1.857 2.015 3.7 3.037 5.542a1282 1282 0 0 1 3.006 5.554c.908 1.682 1.83 3.357 2.752 5.03 1.179 2.353 1.957 4.287 2.43 6.854-3.197.686-5.818.825-9 0-3.224-3.01-5.35-6.62-7.625-10.375l-3.727-5.836-1.81-2.937c-1.798-2.79-3.754-5.376-5.772-8.008-3.364-4.75-3.965-8.253-3.504-13.969l.096-2.32c.081-1.854.207-3.705.342-5.555l-2.184-.738c-4.098-1.837-7.064-4.733-10.414-7.68-2.199-1.824-2.199-1.824-4.338-1.324-2.143.77-3.646 1.695-5.486 3.027C57.447 106.258 42.41 105.048 25 104v-4c3.88-1.27 7.381-2.111 11.46-2.36 13.62-.963 20.805-5.584 30.58-14.833 2.965-2.733 6.132-5.173 9.335-7.62 3.313-2.55 6.578-5.109 9.691-7.902l2.871-2.535 2.465-2.266c4.538-2.592 8.483-.78 13.297.496"
+      ></path>
+    </svg>
+  )
+}
+
 const techLogoMeta = {
   'Laravel (PHP)': { Icon: SiLaravel, color: '#FF2D20' },
   'JavaScript (ES6)': { Icon: SiJavascript, color: '#F7DF1E' },
   JavaScript: { Icon: SiJavascript, color: '#F7DF1E' },
+
+  HTML: { Icon: SiHtml5, color: '#E34F26' },
+  CSS: { Icon: SiCss, color: '#1572B6' },
+  SASS: { Icon: SiSass, color: '#CC6699' },
+  Sass: { Icon: SiSass, color: '#CC6699' },
+
   'Node.js': { Icon: SiNodedotjs, color: '#339933' },
+  'Node JS': { Icon: SiNodedotjs, color: '#339933' },
+
+  'Vite JS': { Icon: SiVite, color: '#646CFF' },
+
+  Ubuntu: { Icon: SiUbuntu, color: '#E95420' },
+  XCode: { Icon: SiXcode, color: '#147EFB' },
+  'Visual Studio': { Icon: DiVisualstudio, color: '#5C2D91' },
+  'MS Studio': { Icon: DiVisualstudio, color: '#5C2D91' },
+
+  'Roo Code': { Icon: RooCodeLogo, color: '#0EA5E9' },
+
+  'CHAT GPT': { Icon: SiOpenai, color: '#10A37F' },
+  'Chat GPT': { Icon: SiOpenai, color: '#10A37F' },
+  ChatGPT: { Icon: SiOpenai, color: '#10A37F' },
+  Gemini: { Icon: SiGooglegemini, color: '#1A73E8' },
+  GEMINI: { Icon: SiGooglegemini, color: '#1A73E8' },
+
   NGINX: { Icon: SiNginx, color: '#009639' },
   'React JS': { Icon: SiReact, color: '#61DAFB' },
   Redux: { Icon: SiRedux, color: '#764ABC' },
@@ -320,7 +377,6 @@ function Icon({ name, className }) {
 function App() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
-  const [revealTick, setRevealTick] = useState(0)
   const [theme, setTheme] = useState(() => {
     try {
       const stored = localStorage.getItem('theme')
@@ -374,16 +430,13 @@ function App() {
     nodes.forEach((el) => observer.observe(el))
 
     return () => observer.disconnect()
-  }, [revealTick])
-
-  // Re-run reveal when the theme changes (DOM might change due to avatar swap etc.)
-  const bumpReveal = useMemo(() => () => setRevealTick((t) => t + 1), [])
+  }, [theme])
 
   const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
     try {
       setSubmitting(true);
-      const response = await axios.post('https://script.google.com/macros/s/AKfycbxkoppzMetMlRVP9ydERwJRh82ilV8B57gVYjKrIPbmkmnf5LgReV8HVWuTCseBWsY/exec', 
-        values, 
+      await axios.post('https://script.google.com/macros/s/AKfycbxkoppzMetMlRVP9ydERwJRh82ilV8B57gVYjKrIPbmkmnf5LgReV8HVWuTCseBWsY/exec',
+        values,
         {
           headers: {
             "Content-Type": "text/plain" // 👈 important!
@@ -420,10 +473,8 @@ function App() {
       // ignore
     }
 
-    bumpReveal()
-
     return () => window.clearTimeout(timeout)
-  }, [theme, bumpReveal]);
+  }, [theme]);
 
   useEffect(() => {
     const onResize = () => {
@@ -756,7 +807,7 @@ function App() {
                 <div>
                   <div className="pill">
                     <span className="h-1.5 w-1.5 rounded-full bg-sky-300" />
-                    OPEN FOR WORK
+                    AVAILABLE FOR FREELANCE & PROJECTS
                   </div>
                   <div className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white">
                     Looking for a reliable engineer?
@@ -825,60 +876,6 @@ function App() {
           </p>
 
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
-            <div className="card p-6 lg:col-span-1" data-reveal data-reveal-delay={40}>
-              <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">DIRECT</div>
-              <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">Email:</span>{' '}
-                  <a
-                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
-                    href={`mailto:${resume.email}`}
-                  >
-                    {resume.email}
-                  </a>
-                </li>
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">Phone:</span> {resume.phone}
-                </li>
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">Location:</span> {resume.location}
-                </li>
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">GitHub:</span>{' '}
-                  <a
-                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
-                    href={resume.github}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {resume.github.replace('https://', '')}
-                  </a>
-                </li>
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">LinkedIn:</span>{' '}
-                  <a
-                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
-                    href={resume.linkedin}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {resume.linkedin.replace('https://', '')}
-                  </a>
-                </li>
-                <li>
-                  <span className="text-slate-600 dark:text-slate-400">Facebook:</span>{' '}
-                  <a
-                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
-                    href={resume.facebook}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {resume.facebook.replace('https://', '')}
-                  </a>
-                </li>
-              </ul>
-            </div>
-
             <div className="card p-6 sm:p-8 lg:col-span-2" data-reveal data-reveal-delay={100}>
               <Formik
                 initialValues={{ 
@@ -902,8 +899,6 @@ function App() {
                   handleBlur,
                   handleSubmit,
                   isSubmitting,
-                  setValues,
-                  setFieldValue
                }) => (
                   <form 
                     onSubmit={handleSubmit} 
@@ -985,6 +980,59 @@ function App() {
                 </form>
                )}
               </Formik>    
+            </div>
+            <div className="card p-6 lg:col-span-1" data-reveal data-reveal-delay={40}>
+              <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">DIRECT</div>
+              <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">Email:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={`mailto:${resume.email}`}
+                  >
+                    {resume.email}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">Phone:</span> {resume.phone}
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">Location:</span> {resume.location}
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">GitHub:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.github}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.github.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">LinkedIn:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.linkedin.replace('https://', '')}
+                  </a>
+                </li>
+                <li>
+                  <span className="text-slate-600 dark:text-slate-400">Facebook:</span>{' '}
+                  <a
+                    className="text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                    href={resume.facebook}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {resume.facebook.replace('https://', '')}
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </section>
