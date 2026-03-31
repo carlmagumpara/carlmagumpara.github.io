@@ -34,6 +34,8 @@ import { DiVisualstudio } from 'react-icons/di';
 import heroImg from '../assets/avatar.jpg';
 import heroImgDark from '../assets/avatar-dark.jpg';
 import logoImg from '../assets/logo.png';
+import lexmeetLogo from '../assets/lexmeet.jpg';
+import eLawSolutionsLogo from '../assets/e-law-solutions.jpg';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -99,6 +101,7 @@ const resume = {
   experience: [
     {
       company: 'LexMeet Inc',
+      logo: lexmeetLogo,
       location: 'Pasig City',
       role: 'Fullstack Developer',
       period: 'Apr 2017 — Present',
@@ -111,6 +114,7 @@ const resume = {
     },
     {
       company: 'E-Law Solutions',
+      logo: eLawSolutionsLogo,
       location: 'Pasig City',
       role: 'Ruby on Rails Developer',
       period: 'Apr 2016 — Apr 2017',
@@ -122,6 +126,21 @@ const resume = {
     },
   ],
 }
+
+const techStack = (() => {
+  const out = []
+  const seen = new Set()
+
+  for (const cat of resume.techCategories) {
+    for (const item of cat.items) {
+      if (seen.has(item)) continue
+      seen.add(item)
+      out.push(item)
+    }
+  }
+
+  return out
+})()
 
 const navItems = [
   { label: 'Home', section: 'home', to: '/?section=home' },
@@ -251,19 +270,25 @@ function getTechAcronym(label) {
     .toUpperCase()
 }
 
-function TechLogo({ label, className }) {
+function TechLogo({ label, className, iconClassName, decorative = true, ...props }) {
   const meta = techLogoMeta[label]
   const IconComp = meta?.Icon
   const color = meta?.color ?? '#94A3B8'
 
+  const mergedStyle = { ...(props.style ?? {}), color }
+
   return (
     <span
+      {...props}
       className={`glass-tile grid h-10 w-10 place-items-center rounded-xl ${className ?? ''}`}
-      style={{ color }}
-      aria-hidden="true"
+      style={mergedStyle}
+      title={label}
+      aria-hidden={decorative ? 'true' : undefined}
+      role={decorative ? undefined : 'img'}
+      aria-label={decorative ? undefined : label}
     >
       {IconComp ? (
-        <IconComp className="h-5 w-5" />
+        <IconComp className={iconClassName ?? 'h-5 w-5'} />
       ) : (
         <span className="text-[10px] font-extrabold tracking-widest">{getTechAcronym(label)}</span>
       )}
@@ -729,42 +754,62 @@ function App() {
         </section>
 
         <section id="technology" className="mx-auto max-w-screen-2xl px-3 py-16 sm:px-4 lg:px-6">
-          <div className="pill">
-            <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />
-            TECHNOLOGY
-          </div>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
-            Languages & frameworks
-          </h2>
-          <p className="mt-4 max-w-2xl text-slate-700 dark:text-slate-300">
-            Tools I’ve used across backend, frontend, mobile, and database work.
-          </p>
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+            <div className="lg:col-span-5">
+              <div className="pill">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-300" />
+                TECHNOLOGY
+              </div>
+              <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+                Languages & frameworks
+              </h2>
+              <p className="mt-4 max-w-2xl text-slate-700 dark:text-slate-300">
+                Tools I’ve used across backend, frontend, mobile, and database work.
+              </p>
 
-          <div className="mt-8 grid gap-10">
-            {resume.techCategories.map((cat, catIdx) => (
-              <div key={cat.title}>
-                <div className="text-xs font-semibold tracking-widest text-slate-600 dark:text-slate-400">
-                  {cat.title.toUpperCase()}
+              <a
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sky-700 hover:text-sky-900 dark:text-sky-300 dark:hover:text-sky-200"
+                href={resume.github}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Browse GitHub <span aria-hidden="true">→</span>
+              </a>
+
+              <div className="mt-10 grid max-w-md grid-cols-2 gap-8">
+                <div>
+                  <div className="text-xl font-semibold text-slate-900 dark:text-white">{techStack.length}+</div>
+                  <div className="mt-1 text-xs tracking-wide text-slate-600 dark:text-slate-400">Tools in my stack</div>
                 </div>
+                <div>
+                  <div className="text-xl font-semibold text-slate-900 dark:text-white">9+ yrs</div>
+                  <div className="mt-1 text-xs tracking-wide text-slate-600 dark:text-slate-400">
+                    Shipping production apps
+                  </div>
+                </div>
+              </div>
+            </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                  {cat.items.map((t, idx) => (
-                    <div
+            <div className="lg:col-span-7 lg:flex lg:justify-end">
+              <div className="relative">
+                <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-[radial-gradient(900px_420px_at_20%_20%,rgba(56,189,248,0.18),transparent_60%)] blur-2xl opacity-70" />
+                <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-[radial-gradient(900px_420px_at_90%_30%,rgba(99,102,241,0.16),transparent_60%)] blur-2xl opacity-70" />
+
+                <div className="relative grid grid-cols-4 gap-3 sm:grid-cols-6">
+                  {techStack.map((t, idx) => (
+                    <TechLogo
                       key={t}
-                      className="card flex items-center gap-3 px-4 py-4"
-                      title={t}
+                      label={t}
+                      decorative={false}
+                      iconClassName="h-7 w-7"
+                      className="h-14 w-14 rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.03]"
                       data-reveal
-                      data-reveal-delay={catIdx * 180 + idx * 35}
-                    >
-                      <TechLogo label={t} className="shrink-0" />
-                      <div className="min-w-0">
-                        <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">{t}</div>
-                      </div>
-                    </div>
+                      data-reveal-delay={idx * 25}
+                    />
                   ))}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
 
           <div className="mt-10">
@@ -845,11 +890,33 @@ function App() {
                 data-reveal
                 data-reveal-delay={idx * 70}
               >
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-                  <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                    {job.company}, {job.location}
-                    <span className="text-slate-600 dark:text-slate-300"> — {job.role}</span>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-3">
+                    {job.logo ? (
+                      <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-2xl border border-slate-900/10 bg-white/55 backdrop-blur-2xl backdrop-saturate-150 dark:border-white/10 dark:bg-white/5">
+                        <img
+                          src={job.logo}
+                          alt={`${job.company} logo`}
+                          className="h-8 w-8 object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    ) : (
+                      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/5 text-slate-600 dark:text-slate-300">
+                        <Icon name="spark" />
+                      </div>
+                    )}
+
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-slate-900 dark:text-white">
+                        {job.company}{' '}
+                        <span className="font-normal text-slate-600 dark:text-slate-300">• {job.location}</span>
+                      </div>
+                      <div className="truncate text-xs text-slate-600 dark:text-slate-400">{job.role}</div>
+                    </div>
                   </div>
+
                   <div className="text-xs tracking-wide text-slate-600 dark:text-slate-400">{job.period}</div>
                 </div>
                 <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
