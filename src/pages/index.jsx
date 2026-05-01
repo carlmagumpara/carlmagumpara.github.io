@@ -795,17 +795,24 @@ function App() {
                 <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-[radial-gradient(900px_420px_at_20%_20%,rgba(56,189,248,0.18),transparent_60%)] blur-2xl opacity-70" />
                 <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-[radial-gradient(900px_420px_at_90%_30%,rgba(99,102,241,0.16),transparent_60%)] blur-2xl opacity-70" />
 
-                <div className="relative grid grid-cols-4 gap-3 sm:grid-cols-6">
+                <div className="relative grid grid-cols-4 gap-4 sm:grid-cols-6">
                   {techStack.map((t, idx) => (
-                    <TechLogo
+                    <div
                       key={t}
-                      label={t}
-                      decorative={false}
-                      iconClassName="h-7 w-7"
-                      className="h-14 w-14 rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.03]"
+                      className="flex flex-col items-center gap-2"
                       data-reveal
                       data-reveal-delay={idx * 25}
-                    />
+                    >
+                      <TechLogo
+                        label={t}
+                        decorative={false}
+                        iconClassName="h-7 w-7"
+                        className="h-14 w-14 rounded-2xl transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.03]"
+                      />
+                      <span className="max-w-[6.5rem] text-center text-[11px] font-medium leading-tight text-slate-700 dark:text-slate-300">
+                        {t}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
