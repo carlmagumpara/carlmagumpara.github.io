@@ -1,9 +1,18 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { cursorUrl } from '../lib/api'
 import type { CursorUser } from '../lib/cursor-hub.mjs'
 
 export type PresenceStatus = 'connecting' | 'online' | 'offline'
+
+/** A heart sent by someone else, displayed briefly before it dismisses itself. */
+export type ReceivedHeart = {
+  id: string
+  name: string
+  color: string
+  /** Horizontal drift (px) so simultaneous hearts don't stack exactly. */
+  drift: number
+}
 
 type PresenceContextValue = {
   /** Everyone else on the page, including visitors with a hidden cursor. */
@@ -11,12 +20,19 @@ type PresenceContextValue = {
   /** Total people browsing, including the current visitor. 0 until connected. */
   count: number
   status: PresenceStatus
+  /** Hearts received from other visitors, newest last. */
+  hearts: ReceivedHeart[]
+  /** Broadcast a heart to everyone else on the page. */
+  sendHeart: () => void
 }
 
 const PresenceContext = createContext<PresenceContextValue | null>(null)
 
 const ID_KEY = 'cursor:id'
 const SEND_INTERVAL_MS = 33 // ~30 updates/sec
+const HEART_TTL_MS = 2600 // long enough for the float/fade animation
+const MAX_VISIBLE_HEARTS = 8
+const HEX_COLOR = /^#[0-9a-f]{6}$/i
 const COLORS = ['#a78bfa', '#34d399', '#f472b6', '#fbbf24', '#60a5fa', '#fb7185', '#22d3ee', '#a3e635']
 const NAMES = [
   'Fox', 'Otter', 'Panda', 'Heron', 'Lynx', 'Koala', 'Falcon', 'Badger',
@@ -67,6 +83,10 @@ function identity() {
 export function LivePresenceProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<CursorUser[]>([])
   const [status, setStatus] = useState<PresenceStatus>('connecting')
+  const [hearts, setHearts] = useState<ReceivedHeart[]>([])
+  // The socket lives inside the effect below; this ref lets the button send a
+  // heart without opening a second connection.
+  const sendHeartRef = useRef<() => void>(() => {})
 
   useEffect(() => {
     const me = identity()
@@ -81,9 +101,15 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
     let lastPosition = { x: 0.5, y: 0.5 }
     let hasMoved = false
     let visible = document.visibilityState === 'visible'
+    const heartTimers = new Set<ReturnType<typeof setTimeout>>()
 
     function send(payload: object) {
       if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify(payload))
+    }
+
+    sendHeartRef.current = () => {
+      const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
+      send({ type: 'heart', id })
     }
 
     function scheduleReconnect() {
@@ -168,6 +194,25 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
 
         if (message.type === 'leave' && typeof message.clientId === 'string') {
           setUsers((previous) => previous.filter((user) => user.clientId !== message.clientId))
+          return
+        }
+
+        if (message.type === 'heart' && typeof message.id === 'string') {
+          const id = message.id.slice(0, 64)
+          const heart: ReceivedHeart = {
+            id,
+            name: typeof message.name === 'string' ? message.name.slice(0, 24) : 'Someone',
+            color: typeof message.color === 'string' && HEX_COLOR.test(message.color)
+              ? message.color
+              : '#f43f5e',
+            drift: Math.round(Math.random() * 80 - 40)
+          }
+          setHearts((previous) => [...previous.slice(-(MAX_VISIBLE_HEARTS - 1)), heart])
+          const timer = setTimeout(() => {
+            heartTimers.delete(timer)
+            setHearts((previous) => previous.filter((item) => item.id !== id))
+          }, HEART_TTL_MS)
+          heartTimers.add(timer)
         }
       })
 
@@ -214,7 +259,10 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
 
     return () => {
       cancelled = true
+      sendHeartRef.current = () => {}
       if (reconnectTimer) clearTimeout(reconnectTimer)
+      for (const timer of heartTimers) clearTimeout(timer)
+      heartTimers.clear()
       window.removeEventListener('mousemove', onMouseMove)
       document.removeEventListener('mouseleave', onMouseLeave)
       document.removeEventListener('mouseenter', onMouseEnter)
@@ -229,9 +277,17 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const sendHeart = useCallback(() => sendHeartRef.current(), [])
+
   const value = useMemo<PresenceContextValue>(
-    () => ({ users, count: status === 'online' ? users.length + 1 : 0, status }),
-    [users, status]
+    () => ({
+      users,
+      count: status === 'online' ? users.length + 1 : 0,
+      status,
+      hearts,
+      sendHeart
+    }),
+    [users, status, hearts, sendHeart]
   )
 
   return <PresenceContext.Provider value={value}>{children}</PresenceContext.Provider>

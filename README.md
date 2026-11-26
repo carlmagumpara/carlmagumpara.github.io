@@ -16,7 +16,7 @@ Visitor on carlmagumpara.github.io
         │
         ├─ /api/github, /api/spotify ─► Vercel functions (cross-origin fetch)
         │
-        └─ WebSocket /api/cursor ─────► Vercel function (live cursors / presence)
+        └─ WebSocket /api/cursor ─────► Vercel function (cursors / presence / hearts)
 ```
 
 - GitHub Pages: <https://carlmagumpara.github.io/>
@@ -117,7 +117,7 @@ endpoints must stay deployed on Vercel:
 | --- | --- | --- |
 | `/api/github` | `api/github.mjs` | Live GitHub profile / follower count |
 | `/api/spotify` | `api/spotify.mjs` | Live "last played" track |
-| `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors and visitor count |
+| `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors, visitor count, and sent hearts |
 
 `vercel.json` still governs this deployment:
 

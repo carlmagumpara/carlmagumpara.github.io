@@ -28,7 +28,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={toggle}
-      className="theme-toggle fixed top-4 right-4 z-50 cursor-pointer text-xl sm:top-6 sm:right-6"
+      className="theme-toggle cursor-pointer text-xl"
       aria-label={label}
       aria-pressed={dark}
       title={label}
