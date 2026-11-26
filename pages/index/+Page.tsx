@@ -3,6 +3,7 @@ import { CopyEmail } from '../../components/CopyEmail'
 import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } from 'react-icons/fa'
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
 import { GitHubFollowers } from '../../components/GitHubFollowers'
+import { LocalTime } from '../../components/LocalTime'
 
 export { Page }
 
@@ -167,6 +168,8 @@ function Page() {
                   View profile →
                 </a>
               </Card>
+
+              <LocalTime />
 
               <LastPlayedBanner />
             </div>
