@@ -22,7 +22,10 @@ function Layout({ children }: { children: React.ReactNode }) {
       <LiveCursors />
       <FloatingHearts />
       <LiveVisitors />
-      {children}
+      {/* Routed content fades on navigation; the fixed controls above stay put. */}
+      <div className="page-content" data-page-content>
+        {children}
+      </div>
     </LivePresenceProvider>
   )
 }

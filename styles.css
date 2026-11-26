@@ -54,6 +54,15 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* Route change fade, driven by +onPageTransitionStart/End. */
+.page-content {
+  transition: opacity 120ms ease;
+}
+body[data-page-transition='out'] .page-content {
+  opacity: 0;
+  transition-duration: 100ms;
+}
+
 /* Headings: tighter tracking for a crisp, professional hierarchy. */
 h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.025em;
@@ -258,7 +267,6 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(0.94);
   filter: blur(6px);
 }
-
 .loader-visual {
   position: relative;
   display: grid;
@@ -549,7 +557,8 @@ h1, h2, h3, h4, h5, h6 {
   .loader-overlay,
   .loader-content,
   .loader-fill,
-  .remote-cursor {
+  .remote-cursor,
+  .page-content {
     transition-duration: 0.01ms;
   }
 }
