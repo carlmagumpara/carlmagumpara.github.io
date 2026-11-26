@@ -46,5 +46,8 @@ function githubApiDev() {
 }
 
 export default defineConfig({
+  // This repo is the user site (carlmagumpara.github.io), so Pages serves it at
+  // the domain root. Keep absolute asset URLs pointing at "/" in production.
+  base: '/',
   plugins: [react(), tailwindcss(), vike(), spotifyApiDev(), githubApiDev()]
 })
