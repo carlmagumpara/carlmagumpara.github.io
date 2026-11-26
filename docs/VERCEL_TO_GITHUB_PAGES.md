@@ -29,6 +29,13 @@ endpoints must stay deployed on Vercel:
 | `/api/github` | `api/github.mjs` | Live GitHub profile / follower count |
 | `/api/spotify` | `api/spotify.mjs` | Live "last played" track |
 | `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors and visitor count |
+| `/api/visitors` | `api/visitors.mjs` | Persistent unique visitor counter (total + today) |
+
+The unique visitor counter is backed by Upstash Redis (see
+`_docs/visitor-counter.md` for setup). The browser sends a persistent `visitor:id`
+from `localStorage` to `/api/visitors`; the function stores an HMAC of it in a
+Redis set, so repeat visits are deduplicated. These credentials are **server-only**
+and are set in Vercel, not in GitHub Actions.
 
 `vercel.json` still governs this deployment. It also redirects browser traffic
 to GitHub Pages, while leaving the API routes reachable:
@@ -171,6 +178,17 @@ The Vercel URLs are public, so store them as **variables**, not secrets
 | `VITE_VERCEL_API_ORIGIN` | `https://example.vercel.app` | Origin for `/api/github` and `/api/spotify` |
 | `VITE_CURSOR_WS_URL` | `wss://example.vercel.app/api/cursor` | WebSocket endpoint for live cursors |
 
+### Server-only variables for the visitor counter
+
+Set these in **Vercel → Settings → Environment Variables** (Production and
+Preview), not in GitHub Actions. The browser never reads them.
+
+| Variable | Purpose |
+| --- | --- |
+| `UPSTASH_REDIS_REST_URL` | REST endpoint of the Upstash Redis database |
+| `UPSTASH_REDIS_REST_TOKEN` | REST token for that database |
+| `VISITOR_HASH_SECRET` | Secret used to HMAC-hash visitor ids before storage (`openssl rand -hex 32`) |
+
 The workflow falls back to the current Vercel URLs when these variables are
 unset. For local overrides, copy the entries from `.env.example` into `.env.local`
 (Vite picks up `VITE_*` vars at dev/build time).
@@ -240,6 +258,8 @@ Then check:
    | `/api/github` | 200 JSON snapshot |
    | `/api/spotify` | 200 JSON snapshot |
    | Vercel `/api/github`, `/api/spotify`, `/api/cursor` | 200 / live socket |
+    | Vercel `/api/visitors` (POST plain-text id) | 200 JSON with `total` and `today` |
+    | `https://carlmagumpara.github.io/` badge | Shows unique count above the live-presence badge |
    | Vercel `/`, `/projects`, `/work-experience` | `308` → same path on `carlmagumpara.github.io` |
 
 If dev tools show API calls going to the configured `VITE_VERCEL_API_ORIGIN`, the
@@ -259,6 +279,8 @@ runtime routing is working as intended.
 | Build fails in Actions but works locally | Missing secret / Node version mismatch | Check Actions secrets and the `node-version: 22` setting |
 | Follower count or track never updates | Static snapshot is stale, or Vercel function is down | Check the Vercel `/api/*` URLs and that CORS headers are present |
 | Live cursors don't connect | WebSocket URL unreachable or Fluid compute off | Check `VITE_CURSOR_WS_URL` points at a reachable `wss://.../api/cursor` and that Vercel Fluid compute is on |
+| Unique visitor badge never appears | Missing Upstash env vars on Vercel, or the function returns 503 | Check Vercel logs for `[visitors] API error` and confirm the three server-only variables are set |
+| Unique count never increases | Same `localStorage` id is being reused, or requests fail | Confirm `/api/visitors` returns a new total for a different id; clear `visitor:id` in DevTools to test |
 | Old deployment still showing | Workflow run still in progress | `concurrency` serializes deploys — wait for the run to finish |
 
 ---
@@ -274,7 +296,8 @@ runtime routing is working as intended.
 | `scripts/emit-static-api.mjs` | Writes static `/api/*` JSON snapshots at build time |
 | `lib/api.ts` | Reads `VITE_VERCEL_API_ORIGIN` / `VITE_CURSOR_WS_URL` to route API/WS calls to Vercel |
 | `.env.example` | Sample values for the build-time `VITE_*` variables |
-| `api/github.mjs`, `api/spotify.mjs`, `api/cursor.mjs` | Vercel serverless functions / socket |
+| `api/github.mjs`, `api/spotify.mjs`, `api/cursor.mjs`, `api/visitors.mjs` | Vercel serverless functions / socket |
+| `lib/visitors.mjs`, `lib/visitor.ts`, `components/UniqueVisitors.tsx` | Shared visit handler, browser id, and badge |
 | `data/github.json`, `data/last-played.json` | Build-time data and fallback |
 
 Related notes: `_docs/GITHUB_PAGES_SETUP.md` (implementation notes),

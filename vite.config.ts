@@ -5,6 +5,7 @@ import { defineConfig, type Plugin, type ViteDevServer } from 'vite'
 import { getSpotifyStatus } from './lib/spotify.mjs'
 import { getGithubProfile } from './lib/github.mjs'
 import { createCursorHub } from './lib/cursor-hub.mjs'
+import { createVisitorsHandler } from './lib/visitors.mjs'
 
 // Vercel serves /api/spotify in production; this mirrors it for `vite dev`.
 function spotifyApiDev() {
@@ -46,6 +47,20 @@ function githubApiDev() {
   }
 }
 
+// Vercel serves /api/visitors in production; this mirrors it for `vite dev`.
+// The handler falls back to in-memory counts when no Upstash vars are set.
+function visitorsApiDev(): Plugin {
+  return {
+    name: 'visitors-api-dev',
+    configureServer(server: ViteDevServer) {
+      const handler = createVisitorsHandler()
+      server.middlewares.use('/api/visitors', (request, response) => {
+        void handler(request, response)
+      })
+    }
+  }
+}
+
 // WebSockets need a real HTTP server. `vite dev` provides one, so attach the
 // same cursor hub used by api/cursor.mjs at /api/cursor. Only upgrades for that
 // path are claimed; Vite's own HMR upgrades are left untouched.
@@ -69,5 +84,5 @@ export default defineConfig({
   // This repo is the user site (carlmagumpara.github.io), so Pages serves it at
   // the domain root. Keep absolute asset URLs pointing at "/" in production.
   base: '/',
-  plugins: [react(), tailwindcss(), vike(), spotifyApiDev(), githubApiDev(), cursorWsDev()]
+  plugins: [react(), tailwindcss(), vike(), spotifyApiDev(), githubApiDev(), visitorsApiDev(), cursorWsDev()]
 })
