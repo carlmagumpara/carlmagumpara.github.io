@@ -188,7 +188,7 @@ push to `main` and on manual dispatch:
 2. `actions/setup-node@v4` (Node 22, npm cache)
 3. `npm ci`
 4. `npm run build`
-   - `prebuild` refreshes `data/github.json` and `data/last-played.json`
+   - `prebuild` refreshes `data/github.json` only; `data/last-played.json` stays as committed
    - `postbuild` runs `scripts/emit-static-api.mjs`
 5. `actions/upload-pages-artifact@v3` uploads `dist/client`
 6. `actions/deploy-pages@v4` publishes it
@@ -224,13 +224,14 @@ If you are adding this from scratch, create that file at
 | Secret | Required? | Purpose |
 | --- | --- | --- |
 | `GITHUB_TOKEN` | Auto | Provided by Actions; raises the GitHub API rate limit (no need to add manually) |
-| `SPOTIFY_CLIENT_ID` | Optional | Build-time "last played" refresh |
-| `SPOTIFY_CLIENT_SECRET` | Optional | Build-time "last played" refresh |
-| `SPOTIFY_REFRESH_TOKEN` | Optional | Build-time "last played" refresh |
+| `SPOTIFY_CLIENT_ID` | Optional | Manual refresh via `npm run spotify` |
+| `SPOTIFY_CLIENT_SECRET` | Optional | Manual refresh via `npm run spotify` |
+| `SPOTIFY_REFRESH_TOKEN` | Optional | Manual refresh via `npm run spotify` |
 
-The workflow passes these to `npm run build` as environment variables. Without
-Spotify secrets the build keeps the committed `data/last-played.json` fallback, so
-builds never fail. If the refresh token rotates, update the repository secret.
+Spotify data is no longer refreshed by `npm run dev` or `npm run build`. Builds
+use the committed `data/last-played.json` as-is; run `npm run spotify` locally when
+you want to update it, then commit the change. If the refresh token rotates, update
+the repository secret.
 
 ### Repository variables for the API URLs
 

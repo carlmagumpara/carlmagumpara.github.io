@@ -6,9 +6,9 @@
   "scripts": {
     "spotify": "node scripts/fetch-spotify.mjs",
     "github": "node scripts/fetch-github.mjs",
-    "predev": "npm run spotify && npm run github",
+    "predev": "npm run github",
     "dev": "vike dev",
-    "prebuild": "npm run spotify && npm run github",
+    "prebuild": "npm run github",
     "build": "vike build",
     "postbuild": "node scripts/emit-static-api.mjs",
     "preview": "vike preview",
