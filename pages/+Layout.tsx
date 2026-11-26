@@ -23,7 +23,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <LiveCursors />
       <FloatingHearts />
       <LiveVisitors />
-      <PhysicsPlayground />
+      {/*<PhysicsPlayground />*/}
       {/* Routed content fades on navigation; the fixed controls above stay put. */}
       <div className="page-content" data-page-content>
         {children}
