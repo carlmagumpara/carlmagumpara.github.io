@@ -52,27 +52,35 @@ export function LastPlayedBanner() {
         href={status.url}
         target="_blank"
         rel="noreferrer"
-        className="group relative block aspect-[3/1] w-full overflow-hidden sm:aspect-[4/1]"
+        className="group relative flex items-center gap-4 overflow-hidden p-4 sm:p-5"
         aria-label={`${status.playing ? 'Now playing' : 'Last played'} on Spotify: ${status.track} by ${status.artist}`}
       >
         <img
           src={status.image}
-          alt={status.album ? `${status.album} album art` : 'Album art'}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-black/80" />
 
-        <span className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-sm">
-          ▶ Spotify
-        </span>
-
-        <div className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-4">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-white/70">
-            {status.playing ? 'Now playing' : 'Last played'}
-          </p>
+        <div className="relative min-w-0 flex-1 text-white">
+          <div className="mb-1 flex items-center gap-2">
+            <span className="rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white/90">
+              ▶ Spotify
+            </span>
+            <span className="label-eyebrow text-[10px] text-white/70">
+              {status.playing ? 'Now playing' : 'Last played'}
+            </span>
+          </div>
           <p className="truncate text-base font-semibold sm:text-lg">{status.track}</p>
           <p className="truncate text-xs text-white/75 sm:text-sm">{status.artist}</p>
         </div>
+
+        <img
+          src={status.image}
+          alt={status.album ? `${status.album} album art` : 'Album art'}
+          className="relative h-14 w-14 shrink-0 rounded-xl object-cover transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16"
+        />
       </a>
     </section>
   )

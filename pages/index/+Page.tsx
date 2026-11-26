@@ -91,9 +91,9 @@ function Page() {
               </div>
             </Card>
 
-            <div className="order-3 grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
+            <div className="order-3 grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-4">
-                <Card>
+                <Card className="h-full">
                   <Eyebrow>Get in touch</Eyebrow>
                   <ul className="flex flex-col gap-2 text-sm">
                     <li>
@@ -129,7 +129,7 @@ function Page() {
               </div>
 
               <div className="flex flex-col gap-4">
-                <Card>
+                <Card className="h-full">
                   <Eyebrow>Currently</Eyebrow>
                   <p className="text-muted text-sm font-medium">Available for freelance &amp; projects</p>
                   <p className="text-muted mt-2 text-sm">
@@ -182,15 +182,12 @@ function Page() {
                 ))}
               </div>
             </Card>
-
-            <Card className="order-4">
-              <p className="text-muted text-center text-sm">
-                © {new Date().getFullYear()} {profile.name}. All rights reserved.
-              </p>
-            </Card>
           </div>
         </div>
 
+        <footer className="text-muted pb-8 text-center text-sm">
+          Designed & built by Carl Anthony Magumpara · © {new Date().getFullYear()}
+        </footer>
       </main>
     </div>
   )
