@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FaUsers } from 'react-icons/fa'
 import githubData from '../data/github.json'
+import { apiUrl } from '../lib/api'
 
 type GithubProfile = {
   username: string
@@ -20,7 +21,7 @@ export function GitHubFollowers() {
 
     const refresh = async () => {
       try {
-        const response = await fetch('/api/github', { cache: 'no-store' })
+        const response = await fetch(apiUrl('/api/github'), { cache: 'no-store' })
         if (!response.ok) return
 
         const live = (await response.json()) as GithubProfile | null

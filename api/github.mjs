@@ -6,6 +6,9 @@ export default async function handler(request, response) {
     return
   }
 
+  // Allow the GitHub Pages site to read this public data cross-origin.
+  response.setHeader('Access-Control-Allow-Origin', '*')
+
   // Reuse cached data briefly to stay well inside GitHub's rate limit.
   response.setHeader('Cache-Control', 'public, max-age=300, s-maxage=300')
 

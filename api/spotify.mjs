@@ -6,6 +6,9 @@ export default async function handler(request, response) {
     return
   }
 
+  // Allow the GitHub Pages site to read this public data cross-origin.
+  response.setHeader('Access-Control-Allow-Origin', '*')
+
   // Always give the browser fresh data when the page is refreshed.
   response.setHeader('Cache-Control', 'private, no-store')
 

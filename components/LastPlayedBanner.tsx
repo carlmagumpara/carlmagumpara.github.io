@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import lastPlayedData from '../data/last-played.json'
+import { apiUrl } from '../lib/api'
 
 type LastPlayed = {
   track: string
@@ -22,7 +23,7 @@ export function LastPlayedBanner() {
 
     const refresh = async () => {
       try {
-        const response = await fetch('/api/spotify', { cache: 'no-store' })
+        const response = await fetch(apiUrl('/api/spotify'), { cache: 'no-store' })
         if (!response.ok) return
 
         const live = (await response.json()) as SpotifyStatus | null
