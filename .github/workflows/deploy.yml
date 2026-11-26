@@ -40,6 +40,10 @@ jobs:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
+          # Public endpoints on the Vercel deployment. Override either with a
+          # repo variable if the Vercel project URL changes.
+          VITE_VERCEL_API_ORIGIN: ${{ vars.VITE_VERCEL_API_ORIGIN || 'https://portfolio-v2-iota-jade.vercel.app' }}
+          VITE_CURSOR_WS_URL: ${{ vars.VITE_CURSOR_WS_URL || 'wss://portfolio-v2-iota-jade.vercel.app/api/cursor' }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

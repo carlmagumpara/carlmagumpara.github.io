@@ -1,31 +1,28 @@
-const VERCEL_API_ORIGIN = 'https://portfolio-v2-iota-jade.vercel.app'
-const VERCEL_WS_ORIGIN = VERCEL_API_ORIGIN.replace('https://', 'wss://')
-
 /**
- * The Vercel app serves live /api/* serverless functions. GitHub Pages is
- * static-only, so calls made from a github.io host are sent to that deployment.
+ * The Vercel app serves live /api/* serverless functions. Set
+ * VITE_VERCEL_API_ORIGIN at build time to point cross-origin fetches at it (the
+ * deploy workflow does this for the GitHub Pages site). When unset, calls stay
+ * same-origin, which works for `vite dev` and the Vercel deployment.
  */
 export function apiUrl(path: '/api/github' | '/api/spotify'): string {
-  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.github.io')) {
-    return `${VERCEL_API_ORIGIN}${path}`
+  const origin = import.meta.env.VITE_VERCEL_API_ORIGIN
+  if (typeof window !== 'undefined' && origin) {
+    return `${origin.replace(/\/$/, '')}${path}`
   }
   return path
 }
 
 /**
- * WebSocket endpoint for live cursors. Locally it lives on the Vite dev server;
- * from github.io it points at the Vercel function. VITE_CURSOR_WS_URL can
- * override this for a custom socket host.
+ * WebSocket endpoint for live cursors. Set VITE_CURSOR_WS_URL at build time to
+ * the socket host (e.g. wss://example.com/api/cursor); the deploy workflow does
+ * this for the GitHub Pages site. When unset, connect to the current origin,
+ * which is where `vite dev` and the Vercel deployment serve the cursor hub.
  */
 export function cursorUrl(): string {
   if (typeof window === 'undefined') return ''
 
-  const override = import.meta.env.VITE_CURSOR_WS_URL
-  if (override) return override
-
-  if (window.location.hostname.endsWith('.github.io')) {
-    return `${VERCEL_WS_ORIGIN}/api/cursor`
-  }
+  const configured = import.meta.env.VITE_CURSOR_WS_URL
+  if (configured) return configured
 
   const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
   return `${protocol}://${window.location.host}/api/cursor`

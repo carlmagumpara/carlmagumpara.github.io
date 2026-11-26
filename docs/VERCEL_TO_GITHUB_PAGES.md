@@ -159,27 +159,28 @@ These are snapshots of `data/last-played.json` and `data/github.json`. A direct
 visit to `carlmagumpara.github.io/api/github` therefore returns 200 instead of
 404 — useful as a fallback and for local inspection.
 
-**b) Runtime calls go to Vercel.** `lib/api.ts` rewrites API and WebSocket URLs
-when the page is hosted on `*.github.io`:
+**b) Runtime calls go to Vercel.** `lib/api.ts` rewrites REST API calls to the
+origin supplied by the build-time env var `VITE_VERCEL_API_ORIGIN` (e.g.
+`https://example.com`). The WebSocket endpoint comes from `VITE_CURSOR_WS_URL`
+(e.g. `wss://example.com/api/cursor`). Both are set in the deploy workflow for
+the GitHub Pages build and documented in `.env.example`:
 
 ```ts
 export function apiUrl(path) {
-  if (window.location.hostname.endsWith('.github.io')) {
-    return `https://portfolio-v2-iota-jade.vercel.app${path}`
-  }
-  return path // same-origin on Vercel / localhost
+  const origin = import.meta.env.VITE_VERCEL_API_ORIGIN
+  return origin ? `${origin}${path}` : path // same-origin when unset
 }
 
 export function cursorUrl() {
-  // ... .github.io → wss://portfolio-v2-iota-jade.vercel.app/api/cursor
+  // VITE_CURSOR_WS_URL when set, otherwise the current origin
 }
 ```
 
-The Vercel handlers send `Access-Control-Allow-Origin: *`, so these cross-origin
-browser fetches succeed. If you redeploy Vercel under a different project URL,
-update `VERCEL_API_ORIGIN` in `lib/api.ts`. For a custom WebSocket host, set the
-build-time env var `VITE_CURSOR_WS_URL` (e.g. `wss://example.com/api/cursor`),
-which takes precedence over the default.
+With neither var set, calls stay same-origin — which is what `vite dev` and the
+Vercel deployment use. The Vercel handlers send `Access-Control-Allow-Origin: *`,
+so cross-origin fetches from Pages succeed. If you redeploy Vercel under a
+different project URL, update `VITE_VERCEL_API_ORIGIN` and `VITE_CURSOR_WS_URL`
+in `.github/workflows/deploy.yml` (or the matching repo variables).
 
 ---
 
