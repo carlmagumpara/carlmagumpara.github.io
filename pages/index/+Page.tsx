@@ -33,6 +33,17 @@ const technology = [
     items: ['Laravel', 'Node JS', 'Ruby on Rails']
   },
   {
+    title: 'Development Tools & AI',
+    items: [
+      'Visual Studio Code',
+      'Roo Code',
+      'OpenCode',
+      'ChatGPT',
+      'Gemini',
+      'Claude AI'
+    ]
+  },
+  {
     title: 'Mobile Development',
     items: ['React Native', 'Xcode', 'Android Studio']
   },
@@ -47,17 +58,6 @@ const technology = [
   {
     title: 'Version Control & Project Management',
     items: ['Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jira']
-  },
-  {
-    title: 'Development Tools & AI',
-    items: [
-      'Visual Studio Code',
-      'Roo Code',
-      'OpenCode',
-      'ChatGPT',
-      'Gemini',
-      'Claude'
-    ]
   }
 ];
 
