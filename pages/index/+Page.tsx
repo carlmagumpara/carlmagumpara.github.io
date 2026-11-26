@@ -1,6 +1,6 @@
 import { Badges, Card, Eyebrow, GroupLabel } from '../../components/Card'
 import { CopyEmail } from '../../components/CopyEmail'
-import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhone } from 'react-icons/fa'
+import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } from 'react-icons/fa'
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
 import { GitHubFollowers } from '../../components/GitHubFollowers'
 
@@ -9,8 +9,7 @@ export { Page }
 const profile = {
   name: 'Carl Anthony Magumpara',
   title: 'Software Engineer',
-  bio: 'Full-stack engineer experienced with Laravel, React, and React Native—focused on reliable APIs, strong data models, and user-friendly interfaces.',
-  location: 'Philippines',
+  bio: 'Based in the Philippines, I am a full-stack software engineer specializing in Laravel, React, and React Native. I design and build reliable APIs, well-structured data models, and polished interfaces—delivering maintainable web and mobile products from concept to production.',
   email: 'magumparacarlanthony@gmail.com',
   phone: '(+63) 950-780-3663',
   github: 'https://github.com/carlmagumpara',
@@ -87,9 +86,6 @@ function Page() {
 
                 <div className="text-muted mt-3 space-y-3 text-sm">
                   <p>{profile.bio}</p>
-                  <p className="flex items-center gap-1.5">
-                    <FaMapMarkerAlt /> {profile.location}
-                  </p>
                 </div>
 
               </div>
