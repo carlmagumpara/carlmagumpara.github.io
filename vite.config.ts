@@ -1,9 +1,10 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import vike from 'vike/plugin'
-import { defineConfig, type ViteDevServer } from 'vite'
+import { defineConfig, type Plugin, type ViteDevServer } from 'vite'
 import { getSpotifyStatus } from './lib/spotify.mjs'
 import { getGithubProfile } from './lib/github.mjs'
+import { createCursorHub } from './lib/cursor-hub.mjs'
 
 // Vercel serves /api/spotify in production; this mirrors it for `vite dev`.
 function spotifyApiDev() {
@@ -45,9 +46,28 @@ function githubApiDev() {
   }
 }
 
+// WebSockets need a real HTTP server. `vite dev` provides one, so attach the
+// same cursor hub used by api/cursor.mjs at /api/cursor. Only upgrades for that
+// path are claimed; Vite's own HMR upgrades are left untouched.
+function cursorWsDev(): Plugin {
+  return {
+    name: 'cursor-ws-dev',
+    configureServer(server: ViteDevServer) {
+      const httpServer = server.httpServer
+      if (!httpServer) return
+
+      const hub = createCursorHub()
+      httpServer.on('upgrade', (request, socket, head) => {
+        hub.handleUpgrade(request, socket, head)
+      })
+      httpServer.on('close', () => hub.close())
+    }
+  }
+}
+
 export default defineConfig({
   // This repo is the user site (carlmagumpara.github.io), so Pages serves it at
   // the domain root. Keep absolute asset URLs pointing at "/" in production.
   base: '/',
-  plugins: [react(), tailwindcss(), vike(), spotifyApiDev(), githubApiDev()]
+  plugins: [react(), tailwindcss(), vike(), spotifyApiDev(), githubApiDev(), cursorWsDev()]
 })

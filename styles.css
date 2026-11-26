@@ -327,17 +327,96 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: translateX(100%); }
 }
 
+/* Live cursors ---------------------------------------------------------- */
+.cursor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.remote-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+  transition: transform 90ms linear;
+}
+
+.remote-cursor svg {
+  display: block;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.4));
+}
+
+.remote-cursor-label {
+  position: absolute;
+  top: 18px;
+  left: 17px;
+  display: block;
+  max-width: 140px;
+  overflow: hidden;
+  border-radius: 9999px;
+  padding: 2px 8px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+}
+
+.cursor-status {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid color-mix(in oklab, var(--base-content) 15%, transparent);
+  border-radius: 9999px;
+  padding: 4px 10px;
+  background-color: color-mix(in oklab, var(--base-100) 80%, transparent);
+  color: var(--base-content);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 14px;
+  text-transform: uppercase;
+  backdrop-filter: blur(6px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.cursor-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #22c55e;
+}
+.cursor-status[data-status='connecting'] .cursor-status-dot {
+  background-color: #fbbf24;
+  animation: loader-pulse 1s ease-in-out infinite;
+}
+.cursor-status[data-status='offline'] .cursor-status-dot {
+  background-color: #f97316;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .loader-overlay::before,
   .loader-orbit,
   .loader-ring,
   .loader-ring-inner,
-  .loader-fill::after {
+  .loader-fill::after,
+  .cursor-status[data-status='connecting'] .cursor-status-dot {
     animation: none;
   }
   .loader-overlay,
   .loader-content,
-  .loader-fill {
+  .loader-fill,
+  .remote-cursor {
     transition-duration: 0.01ms;
   }
 }
