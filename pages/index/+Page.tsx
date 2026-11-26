@@ -90,6 +90,10 @@ function Page() {
 
                 <div className="text-muted mt-3 space-y-3 text-sm">
                   <p>{profile.bio}</p>
+                  <nav aria-label="Jump to section" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+                    <a href="/work-experience" className="link-brand">Work Experience →</a>
+                    <a href="/projects" className="link-brand">Projects →</a>
+                  </nav>
                 </div>
 
               </div>
