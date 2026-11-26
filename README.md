@@ -1,4 +1,9 @@
-# From Vercel to GitHub Pages — setup guide
+# Portfolio setup guide
+
+This README covers two things: editing site content in `config.json`, and deploying
+the site from Vercel to GitHub Pages.
+
+## Deployment overview
 
 How this portfolio is deployed: the **static site** lives on GitHub Pages, while the
 **live APIs and WebSocket** stay on Vercel. GitHub Pages has no server runtime, so
@@ -16,6 +21,90 @@ Visitor on carlmagumpara.github.io
 
 - GitHub Pages: <https://carlmagumpara.github.io/>
 - Vercel (API + WebSocket origin): `https://portfolio-v2-iota-jade.vercel.app`
+
+---
+
+## Editing site content (`config.json`)
+
+`config.json` at the repo root is the source of truth for all portfolio text. The
+pages import it directly, so edits appear after the next build/deploy — no code
+changes needed.
+
+### What each field controls
+
+| Field | Where it appears |
+| --- | --- |
+| `profile.name` | Homepage intro + avatar alt text, footer, browser tab title |
+| `profile.firstName` | "Hi, I'm ___" greeting on the homepage |
+| `profile.title` | Label under the avatar and the suffix of the browser tab title |
+| `profile.bio` | Intro paragraph on the homepage |
+| `profile.email` | Copy-to-clipboard email and "Get in touch" mailto link |
+| `profile.phone` | Contact card on the homepage |
+| `profile.github`, `.linkedin`, `.facebook`, `.discord` | Social icon links (use full URLs, e.g. `https://github.com/<user>`) |
+| `githubUsername` | Contribution chart, social image URL, and the build-time GitHub fetch in `lib/github.mjs` |
+| `technology[]` | "Stack & Tools" card: each group has a `title` and an `items` array of tool names |
+| `workExperience[]` | `/work-experience` page: `company`, `location`, `role`, `period`, and `bullets[]` |
+| `projects[]` | `/projects` page: `name`, `href`, `description`, and `tags[]` |
+
+### How to add information
+
+1. Open `config.json` and edit the existing values, or append a new entry to the
+   relevant array. Keep the JSON valid: double-quoted keys/strings, commas between
+   entries, and no trailing comma after the last item.
+2. Add a technology group:
+
+   ```json
+   {
+     "title": "Testing",
+     "items": ["Vitest", "Playwright"]
+   }
+   ```
+
+3. Add a job:
+
+   ```json
+   {
+     "company": "Example Inc",
+     "location": "Manila, PH",
+     "role": "Software Engineer",
+     "period": "Jan 2024 — Present",
+     "bullets": ["Built internal APIs", "Shipped the customer portal"]
+   }
+   ```
+
+4. Add a project (leave `projects` empty to show the "Projects coming soon"
+   placeholder):
+
+   ```json
+   {
+     "name": "My Project",
+     "href": "https://github.com/<user>/<repo>",
+     "description": "Short description of what it does.",
+     "tags": ["React", "Node JS"]
+   }
+   ```
+
+5. Preview and verify:
+
+   ```bash
+   npm run typecheck   # catches malformed config / type mismatches
+   npm run dev         # live preview in the browser
+   npm run build       # full static build
+   ```
+
+6. Commit and push to `main`. The Pages workflow rebuilds and deploys the site
+   automatically (see the deployment steps below).
+
+### Things to watch out for
+
+- Entries are keyed by `company` (jobs), `name` (projects), `title` (technology
+  groups), and the bullet text itself — keep those unique to avoid React key
+  warnings.
+- Changing `githubUsername` changes the build-time fetch in `data/github.json`;
+  run `npm run github` locally to refresh it if needed.
+- Live follower count and the Spotify "last played" track do **not** come from
+  `config.json` — they come from `data/*.json` and the Vercel API functions
+  (see `_docs/GITHUB_SETUP.md` and `_docs/SPOTIFY_SETUP.md`).
 
 ---
 
