@@ -17,6 +17,8 @@ export function Head() {
     <>
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      {/* Without JavaScript the loader timer never runs, so hide it entirely. */}
+      <noscript><style>{'.loader-overlay{display:none!important}'}</style></noscript>
     </>
   )
 }

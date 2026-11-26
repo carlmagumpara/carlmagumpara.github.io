@@ -147,3 +147,197 @@ h1, h2, h3, h4, h5, h6 {
   50% { transform: rotate(10deg); }
 }
 .animate-wave { animation: wave 2s ease-in-out infinite; }
+
+/* Intro loader ---------------------------------------------------------- */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background-color: var(--page-bg);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+/* Soft ambient glow that breathes behind the spinner. */
+.loader-overlay::before {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    color-mix(in oklab, var(--brand-start) 18%, transparent),
+    transparent 55%
+  );
+  animation: loader-glow 2.4s ease-in-out infinite;
+}
+
+.loader-overlay[data-leaving='true'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.loader-overlay[data-leaving='true'] .loader-content {
+  transform: scale(0.94);
+  filter: blur(6px);
+}
+
+.loader-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/* Dashed orbit with a single travelling dot. */
+.loader-orbit {
+  position: absolute;
+  inset: -14px;
+  border: 1px dashed color-mix(in oklab, var(--base-content) 22%, transparent);
+  border-radius: 9999px;
+  animation: loader-spin 9s linear infinite;
+}
+.loader-orbit::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--brand-start);
+  box-shadow: 0 0 12px 2px color-mix(in oklab, var(--brand-start) 45%, transparent);
+}
+
+/* Rotating conic-gradient ring around a static avatar. */
+.loader-ring {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  padding: 4px;
+  border-radius: 9999px;
+}
+/* Only the gradient spins, leaving the avatar perfectly still. */
+.loader-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--brand-start) 110deg,
+    var(--brand-end) 230deg,
+    transparent 360deg
+  );
+  box-shadow: 0 0 28px -6px color-mix(in oklab, var(--brand-start) 35%, transparent);
+  animation: loader-spin 1.15s linear infinite;
+}
+.loader-ring-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  border-radius: 9999px;
+  background-color: var(--page-bg);
+  animation: loader-pulse 2s ease-in-out infinite;
+}
+.loader-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.loader-percent {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.loader-percent span {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 0.1rem;
+}
+
+.loader-track {
+  position: relative;
+  width: min(15rem, 70vw);
+  height: 5px;
+  overflow: hidden;
+  border-radius: 9999px;
+  background-color: color-mix(in oklab, var(--base-content) 12%, transparent);
+}
+.loader-fill {
+  position: relative;
+  height: 100%;
+  border-radius: inherit;
+  background-image: linear-gradient(to right, var(--brand-start), var(--brand-end));
+  transition: width 90ms linear;
+}
+/* Moving sheen across the completed portion of the bar. */
+.loader-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+  transform: translateX(-100%);
+  animation: loader-sheen 1.3s ease-in-out infinite;
+}
+
+.loader-label {
+  margin: -0.5rem 0 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--base-content) 45%, transparent);
+}
+
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes loader-glow {
+  0%, 100% { opacity: 0.55; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes loader-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+}
+@keyframes loader-sheen {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-overlay::before,
+  .loader-orbit,
+  .loader-ring,
+  .loader-ring-inner,
+  .loader-fill::after {
+    animation: none;
+  }
+  .loader-overlay,
+  .loader-content,
+  .loader-fill {
+    transition-duration: 0.01ms;
+  }
+}
