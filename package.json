@@ -10,6 +10,7 @@
     "dev": "vike dev",
     "prebuild": "npm run spotify && npm run github",
     "build": "vike build",
+    "postbuild": "node scripts/emit-static-api.mjs",
     "preview": "vike preview",
     "typecheck": "tsc --noEmit"
   },
