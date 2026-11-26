@@ -30,15 +30,32 @@ endpoints must stay deployed on Vercel:
 | `/api/spotify` | `api/spotify.mjs` | Live "last played" track |
 | `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors and visitor count |
 
-`vercel.json` still governs this deployment:
+`vercel.json` still governs this deployment. It also redirects browser traffic
+to GitHub Pages, while leaving the API routes reachable:
 
 ```json
 {
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client"
+  "outputDirectory": "dist/client",
+  "redirects": [
+    {
+      "source": "/:path((?!api/).*)",
+      "has": [{ "type": "host", "value": ".*\\.vercel\\.app$" }],
+      "destination": "https://carlmagumpara.github.io/:path*",
+      "permanent": true
+    }
+  ]
 }
 ```
+
+The rule fires only for `*.vercel.app` hosts (production **and** preview
+deployments) and sends a `308` to the same path on `carlmagumpara.github.io`
+(query strings pass through). The negative lookahead `(?!api/)` keeps
+`/api/github`, `/api/spotify`, and `/api/cursor` exempt so the GitHub Pages site
+can still call the live Vercel functions and WebSocket. Requests to custom
+domains and `localhost` are unaffected. Note that Vercel's `has` host matching
+works when deployed but **not** under `vercel dev`, so local dev never redirects.
 
 After any change to `lib/api.ts`, `api/*.mjs`, the Vercel project URL, or the
 `VITE_*` values, confirm the functions still respond (e.g. open
@@ -223,6 +240,7 @@ Then check:
    | `/api/github` | 200 JSON snapshot |
    | `/api/spotify` | 200 JSON snapshot |
    | Vercel `/api/github`, `/api/spotify`, `/api/cursor` | 200 / live socket |
+   | Vercel `/`, `/projects`, `/work-experience` | `308` → same path on `carlmagumpara.github.io` |
 
 If dev tools show API calls going to the configured `VITE_VERCEL_API_ORIGIN`, the
 runtime routing is working as intended.
@@ -233,6 +251,8 @@ runtime routing is working as intended.
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
+| Visiting the Vercel URL doesn't redirect | Redirect rule not deployed yet, or host isn't `*.vercel.app` | Redeploy Vercel; check `curl -I https://<project>.vercel.app/projects` returns a `308` to `carlmagumpara.github.io/projects` |
+| API/WebSocket calls from GitHub Pages fail after adding the redirect | `/api/*` got caught by the redirect rule | Keep the `(?!api/)` lookahead in `vercel.json`; `curl -I https://<project>.vercel.app/api/github` must return `200`, not `308` |
 | Site 404s right after enabling Pages | Source is still "Deploy from a branch" | Set Source to **GitHub Actions** and re-run the workflow |
 | Blank page / missing styles | `base` is wrong, or `.nojekyll` is missing | Keep `base: '/'` for a user site; keep `public/.nojekyll` |
 | CSS/JS 404 with a `/<repo>/` prefix | Configured as a project site | Rename repo to `<username>.github.io` or set `base: '/<repo>/'` |
@@ -248,7 +268,7 @@ runtime routing is working as intended.
 | File | Role in this setup |
 | --- | --- |
 | `.github/workflows/deploy.yml` | Build and deploy the static site to Pages |
-| `vercel.json` | Vercel build/output config for the API functions |
+| `vercel.json` | Vercel build/output config plus the `vercel.app` → GitHub Pages redirect (API routes exempt) |
 | `vite.config.ts` | `base: '/'`, dev-server mirrors of the API, WebSocket hub |
 | `public/.nojekyll` | Prevents Jekyll from stripping generated folders |
 | `scripts/emit-static-api.mjs` | Writes static `/api/*` JSON snapshots at build time |

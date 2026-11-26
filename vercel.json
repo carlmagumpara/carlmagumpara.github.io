@@ -2,5 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client"
+  "outputDirectory": "dist/client",
+  "redirects": [
+    {
+      "source": "/:path((?!api/).*)",
+      "has": [
+        { "type": "host", "value": ".*\\.vercel\\.app$" }
+      ],
+      "destination": "https://carlmagumpara.github.io/:path*",
+      "permanent": true
+    }
+  ]
 }
