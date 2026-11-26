@@ -6,6 +6,7 @@ import { FloatingHearts } from '../components/FloatingHearts'
 import { LiveCursors } from '../components/LiveCursors'
 import { LivePresenceProvider } from '../components/LivePresence'
 import { LiveVisitors } from '../components/LiveVisitors'
+import PhysicsPlayground from '../components/PhysicsPlayground'
 import '../styles.css'
 
 export { Layout }
@@ -22,6 +23,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <LiveCursors />
       <FloatingHearts />
       <LiveVisitors />
+      <PhysicsPlayground />
       {/* Routed content fades on navigation; the fixed controls above stay put. */}
       <div className="page-content" data-page-content>
         {children}
