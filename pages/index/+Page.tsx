@@ -69,7 +69,7 @@ function Page() {
           <div className="contents lg:col-span-2 lg:flex lg:flex-col lg:gap-4">
             <Card className="order-1">
               <div className="flow-root">
-                <div className="mx-auto mb-4 w-60 sm:float-right sm:mb-2 sm:ml-6 sm:w-44 sm:[shape-margin:1rem] sm:[shape-outside:circle(50%)]">
+                <div className="relative mx-auto mb-4 w-60 sm:float-right sm:mb-2 sm:ml-6 sm:w-44 sm:[shape-margin:1rem] sm:[shape-outside:circle(50%)]">
                   <img
                     src="/avatar.jpg"
                     alt={`${profile.name} avatar`}
@@ -77,6 +77,9 @@ function Page() {
                     height={500}
                     className="brand-gradient h-auto w-full rounded-full p-2 object-cover"
                   />
+                  <span className="avatar-status" role="status">
+                    Probably fixing bugs
+                  </span>
                 </div>
 
                 <p className="label-eyebrow text-faint text-xs">{profile.title}</p>
