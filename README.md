@@ -20,7 +20,7 @@ Visitor on carlmagumpara.github.io
 ```
 
 - GitHub Pages: <https://carlmagumpara.github.io/>
-- Vercel (API + WebSocket origin): `https://portfolio-v2-iota-jade.vercel.app`
+- Vercel (API + WebSocket origin): `https://portfolio-v2-iota-jade.vercel.app` — configured through `VITE_VERCEL_API_ORIGIN` and `VITE_CURSOR_WS_URL` (see below)
 
 ---
 
@@ -129,8 +129,9 @@ endpoints must stay deployed on Vercel:
 }
 ```
 
-After any change to `lib/api.ts`, `api/*.mjs`, or the Vercel project URL, confirm
-the functions still respond (e.g. open `https://<your-project>.vercel.app/api/github`).
+After any change to `lib/api.ts`, `api/*.mjs`, the Vercel project URL, or the
+`VITE_*` values, confirm the functions still respond (e.g. open
+`https://<your-project>.vercel.app/api/github`).
 
 > WebSocket note: `api/cursor.mjs` needs Vercel Fluid compute. Projects created
 > after 2025-04-23 use it by default; older projects may need it enabled.
@@ -152,7 +153,8 @@ A **user site** must be named `<username>.github.io` and is served from `/`.
    ```
 
    If you ever switch to a *project* site (`github.io/<repo>/`), change `base`
-   to `/<repo>/` and update the hostname checks in `lib/api.ts` accordingly.
+   to `/<repo>/`; API/WS routing is env-driven, so no `lib/api.ts` change is
+   needed.
 3. Keep `public/.nojekyll` (an empty file). It stops Jekyll from stripping the
    `assets/` and `.vite/` folders that Vike emits, and it is copied into
    `dist/client` during the build.
@@ -215,7 +217,7 @@ If you are adding this from scratch, create that file at
 
 ---
 
-## 5. Add Actions secrets
+## 5. Add Actions secrets and variables
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
@@ -229,6 +231,20 @@ If you are adding this from scratch, create that file at
 The workflow passes these to `npm run build` as environment variables. Without
 Spotify secrets the build keeps the committed `data/last-played.json` fallback, so
 builds never fail. If the refresh token rotates, update the repository secret.
+
+### Repository variables for the API URLs
+
+The Vercel URLs are public, so store them as **variables**, not secrets
+(**Settings → Secrets and variables → Actions → Variables**):
+
+| Variable | Example | Purpose |
+| --- | --- | --- |
+| `VITE_VERCEL_API_ORIGIN` | `https://example.vercel.app` | Origin for `/api/github` and `/api/spotify` |
+| `VITE_CURSOR_WS_URL` | `wss://example.vercel.app/api/cursor` | WebSocket endpoint for live cursors |
+
+The workflow falls back to the current Vercel URLs when these variables are
+unset. For local overrides, copy the entries from `.env.example` into `.env.local`
+(Vite picks up `VITE_*` vars at dev/build time).
 
 ---
 
@@ -250,9 +266,9 @@ visit to `carlmagumpara.github.io/api/github` therefore returns 200 instead of
 
 **b) Runtime calls go to Vercel.** `lib/api.ts` rewrites REST API calls to the
 origin supplied by the build-time env var `VITE_VERCEL_API_ORIGIN` (e.g.
-`https://example.com`). The WebSocket endpoint comes from `VITE_CURSOR_WS_URL`
-(e.g. `wss://example.com/api/cursor`). Both are set in the deploy workflow for
-the GitHub Pages build and documented in `.env.example`:
+`https://example.vercel.app`). The WebSocket endpoint comes from
+`VITE_CURSOR_WS_URL` (e.g. `wss://example.vercel.app/api/cursor`). Both are set in
+the deploy workflow for the GitHub Pages build and documented in `.env.example`:
 
 ```ts
 export function apiUrl(path) {
@@ -296,7 +312,7 @@ Then check:
    | `/api/spotify` | 200 JSON snapshot |
    | Vercel `/api/github`, `/api/spotify`, `/api/cursor` | 200 / live socket |
 
-If dev tools show API calls going to `portfolio-v2-iota-jade.vercel.app`, the
+If dev tools show API calls going to the configured `VITE_VERCEL_API_ORIGIN`, the
 runtime routing is working as intended.
 
 ---
@@ -310,7 +326,7 @@ runtime routing is working as intended.
 | CSS/JS 404 with a `/<repo>/` prefix | Configured as a project site | Rename repo to `<username>.github.io` or set `base: '/<repo>/'` |
 | Build fails in Actions but works locally | Missing secret / Node version mismatch | Check Actions secrets and the `node-version: 22` setting |
 | Follower count or track never updates | Static snapshot is stale, or Vercel function is down | Check the Vercel `/api/*` URLs and that CORS headers are present |
-| Live cursors don't connect | WebSocket origin unreachable or Fluid compute off | Verify `wss://.../api/cursor`, check Vercel Fluid compute, or set `VITE_CURSOR_WS_URL` |
+| Live cursors don't connect | WebSocket URL unreachable or Fluid compute off | Check `VITE_CURSOR_WS_URL` points at a reachable `wss://.../api/cursor` and that Vercel Fluid compute is on |
 | Old deployment still showing | Workflow run still in progress | `concurrency` serializes deploys — wait for the run to finish |
 
 ---
@@ -324,7 +340,8 @@ runtime routing is working as intended.
 | `vite.config.ts` | `base: '/'`, dev-server mirrors of the API, WebSocket hub |
 | `public/.nojekyll` | Prevents Jekyll from stripping generated folders |
 | `scripts/emit-static-api.mjs` | Writes static `/api/*` JSON snapshots at build time |
-| `lib/api.ts` | Routes `*.github.io` API/WS calls to Vercel |
+| `lib/api.ts` | Reads `VITE_VERCEL_API_ORIGIN` / `VITE_CURSOR_WS_URL` to route API/WS calls to Vercel |
+| `.env.example` | Sample values for the build-time `VITE_*` variables |
 | `api/github.mjs`, `api/spotify.mjs`, `api/cursor.mjs` | Vercel serverless functions / socket |
 | `data/github.json`, `data/last-played.json` | Build-time data and fallback |
 
