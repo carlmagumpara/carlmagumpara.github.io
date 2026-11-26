@@ -15,7 +15,7 @@ const themeInit = `
 export function Head() {
   return (
     <>
-      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      <link rel="icon" href="/avatar.jpg" type="image/jpeg" />
       <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       {/* Without JavaScript the loader timer never runs, so hide it entirely. */}
       <noscript><style>{'.loader-overlay{display:none!important}'}</style></noscript>

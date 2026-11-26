@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MoonIcon, SunIcon } from './Icons'
+import { FiMoon, FiSun } from 'react-icons/fi'
 
 export function ThemeToggle() {
   // Start from the light state on both server and client so hydration stays
@@ -33,8 +33,8 @@ export function ThemeToggle() {
       aria-pressed={dark}
       title={label}
     >
-      <SunIcon className="hidden h-5 w-5 dark:block" />
-      <MoonIcon className="block h-5 w-5 dark:hidden" />
+      <FiSun className="hidden h-5 w-5 dark:block" />
+      <FiMoon className="block h-5 w-5 dark:hidden" />
     </button>
   )
 }

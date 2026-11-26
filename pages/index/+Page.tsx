@@ -1,7 +1,8 @@
 import { Badges, Card, Eyebrow, GroupLabel } from '../../components/Card'
 import { CopyEmail } from '../../components/CopyEmail'
-import { FacebookIcon, GithubIcon, LinkedinIcon, PhoneIcon, PinIcon } from '../../components/Icons'
+import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaMapMarkerAlt, FaPhone } from 'react-icons/fa'
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
+import { GitHubFollowers } from '../../components/GitHubFollowers'
 
 export { Page }
 
@@ -9,12 +10,13 @@ const profile = {
   name: 'Carl Anthony Magumpara',
   title: 'Software Engineer',
   bio: 'Full-stack engineer experienced with Laravel, React, and React Native—focused on reliable APIs, strong data models, and user-friendly interfaces.',
-  location: 'Gumaca, Quezon',
+  location: 'Philippines',
   email: 'magumparacarlanthony@gmail.com',
   phone: '(+63) 950-780-3663',
   github: 'https://github.com/carlmagumpara',
   linkedin: 'https://www.linkedin.com/in/carlmagumpara',
-  facebook: 'https://www.facebook.com/im.crlm'
+  facebook: 'https://www.facebook.com/im.crlm',
+  discord: 'https://discord.com'
 }
 
 const technology = [
@@ -24,11 +26,11 @@ const technology = [
   },
   {
     title: 'Frontend Development',
-    items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS', 'Vite JS', 'SASS']
+    items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS', 'Vite', 'Vike', 'Next JS', 'SASS']
   },
   {
     title: 'Backend Development',
-    items: ['Laravel', 'Node JS', 'Ruby on Rails', 'RESTful APIs']
+    items: ['Laravel', 'Node JS', 'Ruby on Rails']
   },
   {
     title: 'Mobile Development',
@@ -53,7 +55,8 @@ const technology = [
       'Roo Code',
       'OpenCode',
       'ChatGPT',
-      'Gemini'
+      'Gemini',
+      'Claude'
     ]
   }
 ];
@@ -85,7 +88,7 @@ function Page() {
                 <div className="text-muted mt-3 space-y-3 text-sm">
                   <p>{profile.bio}</p>
                   <p className="flex items-center gap-1.5">
-                    <PinIcon /> {profile.location}
+                    <FaMapMarkerAlt /> {profile.location}
                   </p>
                 </div>
 
@@ -101,23 +104,28 @@ function Page() {
                       <CopyEmail email={profile.email} />
                     </li>
                     <li className="text-muted flex items-center gap-2">
-                      <PhoneIcon /> {profile.phone}
+                      <FaPhone /> {profile.phone}
                     </li>
                   </ul>
                   <ul className="mt-4 flex justify-center gap-4 text-2xl">
                     <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
                       <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
-                        <GithubIcon />
+                        <FaGithub />
                       </a>
                     </li>
                     <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
                       <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
-                        <LinkedinIcon />
+                        <FaLinkedin />
                       </a>
                     </li>
                     <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
                       <a href={profile.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
-                        <FacebookIcon />
+                        <FaFacebookF />
+                      </a>
+                    </li>
+                    <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
+                      <a href={profile.discord} target="_blank" rel="noreferrer" aria-label="Discord">
+                        <FaDiscord />
                       </a>
                     </li>
                   </ul>
@@ -142,6 +150,7 @@ function Page() {
                 <Eyebrow>GitHub</Eyebrow>
                 <p className="text-sm font-medium">Contributions</p>
                 <p className="text-muted mt-1 text-sm">Recent activity from my GitHub profile.</p>
+                <GitHubFollowers />
                 <div className="mt-3 overflow-x-auto">
                   <img
                     src="https://ghchart.rshah.org/39d353/carlmagumpara"

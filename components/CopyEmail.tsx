@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CopyIcon } from './Icons'
+import { FaCopy } from 'react-icons/fa'
 
 export function CopyEmail({ email }: { email: string }) {
   const [copied, setCopied] = useState(false)
@@ -26,7 +26,7 @@ export function CopyEmail({ email }: { email: string }) {
         {email}
       </a>
       <button type="button" onClick={copy} aria-label="Copy email address">
-        <CopyIcon />
+        <FaCopy className="ml-2 inline cursor-pointer" />
       </button>
       {copied && <span className="text-faint ml-2 text-xs">Copied!</span>}
     </span>
