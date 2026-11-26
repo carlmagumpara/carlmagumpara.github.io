@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+*.log
+.DS_Store
+.env
+.env.local
+
+# Agent scratch folders
+_plans/
+_docs/
+_runbooks/
+_tmp/

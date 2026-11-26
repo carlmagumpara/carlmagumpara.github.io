@@ -1,0 +1,8 @@
+{
+  "track": "Your last played track",
+  "artist": "Connect Spotify to show your music",
+  "album": "Fallback banner",
+  "image": "/album-banner.svg",
+  "url": "https://open.spotify.com/",
+  "playedAt": null
+}

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --brand-start: #000000;
+  --brand-end: #000000;
+  --base-100: #ffffff;
+  --base-200: #f8f8f8;
+  --base-content: #18181b;
+}
+
+@theme inline {
+  --color-brand-start: var(--brand-start);
+  --color-brand-end: var(--brand-end);
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-content: var(--base-content);
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--base-100);
+  color: var(--base-content);
+}
+
+/* Shared card style */
+.card {
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--base-content) 25%, transparent);
+  background-color: var(--base-200);
+  transition: border-color 0.2s ease;
+}
+.card:hover {
+  border-color: color-mix(in oklab, var(--brand-start) 60%, transparent);
+}
+
+/* Text tones */
+.text-muted { color: color-mix(in oklab, var(--base-content) 60%, transparent); }
+.text-label { color: color-mix(in oklab, var(--base-content) 78%, transparent); }
+.text-faint { color: color-mix(in oklab, var(--base-content) 45%, transparent); }
+
+.label-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+/* Brand color helpers */
+.brand-gradient {
+  background-image: linear-gradient(to bottom right, var(--brand-start), var(--brand-end));
+}
+.brand-text {
+  background-image: linear-gradient(to top left, var(--brand-start), var(--brand-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.link-brand { color: var(--brand-start); width: fit-content; }
+.link-brand:hover { text-decoration: underline; }
+
+/* Small outline badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid color-mix(in oklab, var(--base-content) 25%, transparent);
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: var(--base-content);
+  opacity: 0.78;
+  cursor: default;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.badge:hover {
+  color: var(--brand-start);
+  border-color: var(--brand-start);
+  opacity: 1;
+}
+
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+}
+.animate-wave { animation: wave 2s ease-in-out infinite; }
