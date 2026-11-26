@@ -35,6 +35,10 @@ export function LastPlayedBanner() {
 
     void refresh()
 
+    const interval = window.setInterval(() => {
+      void refresh()
+    }, 3000)
+
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') void refresh()
     }
@@ -42,6 +46,7 @@ export function LastPlayedBanner() {
 
     return () => {
       mounted = false
+      window.clearInterval(interval)
       document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [])
