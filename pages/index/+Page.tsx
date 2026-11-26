@@ -103,9 +103,6 @@ function Page() {
                     <li className="text-muted flex items-center gap-2">
                       <PhoneIcon /> {profile.phone}
                     </li>
-                    <li className="text-muted flex items-center gap-2">
-                      <PinIcon /> {profile.location}
-                    </li>
                   </ul>
                   <ul className="mt-4 flex justify-center gap-4 text-2xl">
                     <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
