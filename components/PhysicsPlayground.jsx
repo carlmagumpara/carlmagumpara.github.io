@@ -5,7 +5,7 @@ const INITIAL_OBJECTS = [
   {
     id: 'react',
     label: 'React',
-    x: 0.12,
+    x: 0.1,
     y: 0.22,
     width: 104,
     height: 104,
@@ -16,7 +16,7 @@ const INITIAL_OBJECTS = [
   {
     id: 'bug',
     label: 'Bug',
-    x: 0.72,
+    x: 0.78,
     y: 0.16,
     width: 92,
     height: 92,
@@ -27,7 +27,7 @@ const INITIAL_OBJECTS = [
   {
     id: 'code',
     label: 'Code',
-    x: 0.36,
+    x: 0.08,
     y: 0.48,
     width: 132,
     height: 78,
@@ -38,8 +38,8 @@ const INITIAL_OBJECTS = [
   {
     id: 'coffee',
     label: 'Coffee',
-    x: 0.78,
-    y: 0.62,
+    x: 0.76,
+    y: 0.66,
     width: 100,
     height: 100,
     className: 'text-amber-300',
@@ -49,8 +49,8 @@ const INITIAL_OBJECTS = [
   {
     id: 'php',
     label: 'PHP',
-    x: 0.16,
-    y: 0.72,
+    x: 0.12,
+    y: 0.74,
     width: 116,
     height: 72,
     className: 'text-indigo-300',
@@ -264,7 +264,7 @@ export default function PhysicsPlayground() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-40 overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-40 hidden overflow-hidden lg:block"
       aria-label="Interactive physics playground"
     >
       {INITIAL_OBJECTS.map((item) => (
