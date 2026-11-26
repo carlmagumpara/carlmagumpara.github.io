@@ -35,9 +35,8 @@ jobs:
         run: npm run build
         env:
           # Public GitHub API works without a token; this just raises the rate limit.
-          # Spotify secrets are optional — the committed JSON is used when absent.
+          # The GitHub username comes from config.json. Spotify secrets are optional.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: carlmagumpara
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
           SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}

@@ -1,6 +1,8 @@
 import { Badges } from '../../components/Card'
 import { SectionPage } from '../../components/SectionPage'
-import { projects } from '../../data/projects'
+import config from '../../config.json'
+
+const { projects } = config
 
 export { Page }
 

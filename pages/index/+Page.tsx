@@ -4,62 +4,11 @@ import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } from 'react-ico
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
 import { GitHubFollowers } from '../../components/GitHubFollowers'
 import { LocalTime } from '../../components/LocalTime'
+import config from '../../config.json'
 
 export { Page }
 
-const profile = {
-  name: 'Carl Anthony Magumpara',
-  title: 'Software Engineer',
-  bio: 'Based in the Philippines, I am a full-stack software engineer specializing in Laravel, React, and React Native. I design and build reliable APIs, well-structured data models, and polished interfaces—delivering maintainable web and mobile products from concept to production.',
-  email: 'magumparacarlanthony@gmail.com',
-  phone: '(+63) 950-780-3663',
-  github: 'https://github.com/carlmagumpara',
-  linkedin: 'https://www.linkedin.com/in/carlmagumpara',
-  facebook: 'https://www.facebook.com/im.crlm',
-  discord: 'https://discord.com'
-}
-
-const technology = [
-  {
-    title: 'Languages',
-    items: ['JavaScript', 'Python', 'PHP', 'Ruby', 'HTML', 'CSS']
-  },
-  {
-    title: 'Frontend Development',
-    items: ['React JS', 'Redux', 'Bootstrap', 'Tailwind CSS', 'Vite', 'Vike', 'Next JS', 'SASS']
-  },
-  {
-    title: 'Backend Development',
-    items: ['Laravel', 'Node JS', 'Ruby on Rails']
-  },
-  {
-    title: 'Development Tools & AI',
-    items: [
-      'Visual Studio Code',
-      'Roo Code',
-      'OpenCode',
-      'ChatGPT',
-      'Gemini',
-      'Claude AI'
-    ]
-  },
-  {
-    title: 'Mobile Development',
-    items: ['React Native', 'Xcode', 'Android Studio']
-  },
-  {
-    title: 'Databases & Storage',
-    items: ['MySQL', 'Redis', 'Firebase']
-  },
-  {
-    title: 'DevOps & Deployment',
-    items: ['Docker', 'NGINX', 'Ubuntu', 'Vercel', 'Render']
-  },
-  {
-    title: 'Version Control & Project Management',
-    items: ['Git', 'GitHub', 'GitLab', 'Bitbucket', 'Jira']
-  }
-];
+const { profile, technology, githubUsername } = config
 
 function Page() {
   return (
@@ -85,7 +34,7 @@ function Page() {
 
                 <p className="label-eyebrow text-faint text-xs">{profile.title}</p>
                 <h1 className="mt-1 text-center text-4xl sm:text-left md:text-3xl">
-                  Hi, I&apos;m <span className="brand-text font-bold">Carl</span>
+                  Hi, I&apos;m <span className="brand-text font-bold">{profile.firstName}</span>
                 </h1>
 
                 <div className="text-muted mt-3 space-y-3 text-sm">
@@ -157,7 +106,7 @@ function Page() {
                 <GitHubFollowers />
                 <div className="mt-3 overflow-x-auto">
                   <img
-                    src="https://ghchart.rshah.org/39d353/carlmagumpara"
+                    src={`https://ghchart.rshah.org/39d353/${githubUsername}`}
                     alt={`${profile.name} GitHub contributions chart`}
                     className="max-w-none"
                     loading="lazy"
@@ -196,7 +145,7 @@ function Page() {
         </div>
 
         <footer className="text-muted pb-8 text-center text-sm">
-          Designed & built by Carl Anthony Magumpara · © {new Date().getFullYear()}
+          Designed &amp; built by {profile.name} · © {new Date().getFullYear()}
         </footer>
       </main>
     </div>

@@ -1,5 +1,7 @@
-import { experience } from '../../data/experience'
+import config from '../../config.json'
 import { SectionPage } from '../../components/SectionPage'
+
+const { workExperience } = config
 
 export { Page }
 
@@ -11,7 +13,7 @@ function Page() {
       description="A brief history of the teams and roles I've worked with."
     >
       <ul className="flex flex-col gap-8">
-        {experience.map((job) => (
+        {workExperience.map((job) => (
           <li key={job.company} className="flex gap-4">
             <div
               aria-hidden="true"
