@@ -105,17 +105,24 @@ function Page() {
               </div>
 
               <Card className="sm:col-span-2">
-                <Eyebrow>GitHub</Eyebrow>
+                <div className="flex justify-between items-center">
+                  <Eyebrow>GitHub</Eyebrow>
+                  <GitHubFollowers />
+                </div>
+
                 <p className="text-sm font-medium">Contributions</p>
                 <p className="text-muted mt-1 text-sm">Recent activity from my GitHub profile.</p>
-                <GitHubFollowers />
+                
                 <div className="mt-3 overflow-x-auto">
                   <img
-                    src={`https://ghchart.rshah.org/39d353/${githubUsername}`}
+                    src={`https://ghchart.rshah.org/fb7185/${githubUsername}`}
                     alt={`${profile.name} GitHub contributions chart`}
                     className="max-w-none"
                     loading="lazy"
                   />
+                </div>
+                <div className="mt-3 overflow-x-auto">
+                  <img src={`https://github.pumbas.net/api/contributions/${githubUsername}?colour=FB7185`} alt={`${githubUsername}'s GitHub contributions`} />
                 </div>
                 <a
                   href={profile.github}

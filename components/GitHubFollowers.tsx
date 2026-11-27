@@ -45,7 +45,7 @@ export function GitHubFollowers() {
   }, [])
 
   return (
-    <div className="mt-3 flex items-center">
+    <div className="flex items-center">
       <a
         href={`${profile.url}?tab=followers`}
         target="_blank"
