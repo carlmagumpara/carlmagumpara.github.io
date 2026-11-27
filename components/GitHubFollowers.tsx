@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { FaUsers } from 'react-icons/fa'
 import githubData from '../data/github.json'
 import { apiUrl } from '../lib/api'
+import { CountUp } from './CountUp'
 
 type GithubProfile = {
   username: string
@@ -54,7 +55,9 @@ export function GitHubFollowers() {
         aria-label={`${profile.followers} GitHub followers — view followers`}
       >
         <FaUsers aria-hidden="true" />
-        <span className="font-semibold tabular-nums">{profile.followers.toLocaleString()}</span>
+        <span className="font-semibold tabular-nums">
+          <CountUp value={profile.followers} />
+        </span>
         <span>followers</span>
       </a>
     </div>

@@ -1,3 +1,4 @@
+import { CountUp } from './CountUp'
 import { usePresence } from './LivePresence'
 
 /** Compact, always-visible count of everyone currently on the page. */
@@ -5,11 +6,18 @@ export function LiveVisitors() {
   const { users, count, status } = usePresence()
 
   const label =
-    status === 'online'
-      ? `${count} ${count === 1 ? 'person' : 'people'} browsing now`
-      : status === 'connecting'
-        ? 'Connecting…'
-        : 'Offline'
+    status === 'online' ? (
+      <>
+        <span className="tabular-nums">
+          <CountUp value={count} />
+        </span>{' '}
+        {count === 1 ? 'person' : 'people'} browsing now
+      </>
+    ) : status === 'connecting' ? (
+      'Connecting…'
+    ) : (
+      'Offline'
+    )
 
   const names = status === 'online' ? [...users.map((user) => user.name), 'You'] : []
 

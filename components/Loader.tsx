@@ -4,7 +4,12 @@ import { useEffect, useState } from 'react'
 const LOAD_DURATION = 3000
 const EXIT_DURATION = 450
 
-export function Loader() {
+type LoaderProps = {
+  /** Called once the splash is fully gone, so on-screen animations can start. */
+  onDone?: () => void
+}
+
+export function Loader({ onDone }: LoaderProps) {
   const [progress, setProgress] = useState(0)
   const [leaving, setLeaving] = useState(false)
   const [removed, setRemoved] = useState(false)
@@ -23,6 +28,10 @@ export function Loader() {
       document.body.style.overflow = previousOverflow
     }
   }, [removed])
+
+  useEffect(() => {
+    if (removed) onDone?.()
+  }, [removed, onDone])
 
   useEffect(() => {
     let frame = 0

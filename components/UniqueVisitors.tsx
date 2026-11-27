@@ -1,3 +1,4 @@
+import { CountUp } from './CountUp'
 import { usePresence } from './LivePresence'
 
 /**
@@ -10,11 +11,15 @@ export function UniqueVisitors() {
 
   return (
     <div className="unique-visitor-badge" role="status" aria-live="polite" title="Unique visitors">
-      <span>{visitorStats.total.toLocaleString()} unique visitors</span>
+      <span className="tabular-nums">
+        <CountUp value={visitorStats.total} /> unique visitors
+      </span>
       <span className="visitor-stat-divider" aria-hidden="true">
         ·
       </span>
-      <span>{visitorStats.today.toLocaleString()} today</span>
+      <span className="tabular-nums">
+        <CountUp value={visitorStats.today} /> today
+      </span>
     </div>
   )
 }

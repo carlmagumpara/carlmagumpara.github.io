@@ -4,6 +4,7 @@ import { FaCommentDots, FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } 
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
 import { GitHubFollowers } from '../../components/GitHubFollowers'
 import { LocalTime } from '../../components/LocalTime'
+import { useLoaderDone } from '../../components/LoaderContext'
 import config from '../../config.json'
 
 export { Page }
@@ -11,6 +12,9 @@ export { Page }
 const { profile, technology, githubUsername } = config
 
 function Page() {
+  // Defer the third-party contribution charts until the splash is gone.
+  const loaderDone = useLoaderDone()
+
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 md:px-0">
       
@@ -122,7 +126,7 @@ function Page() {
                   />
                 </div>
                 <div className="mt-3 overflow-x-auto">
-                  <img src={`https://github.pumbas.net/api/contributions/${githubUsername}?colour=FB7185`} alt={`${githubUsername}'s GitHub contributions`} />
+                  <img key={loaderDone} src={`https://github.pumbas.net/api/contributions/${githubUsername}?colour=FB7185`} alt={`${githubUsername}'s GitHub contributions`} />
                 </div>
                 <a
                   href={profile.github}
