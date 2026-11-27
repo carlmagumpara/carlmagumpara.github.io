@@ -4,7 +4,7 @@
  * deploy workflow does this for the GitHub Pages site). When unset, calls stay
  * same-origin, which works for `vite dev` and the Vercel deployment.
  */
-export function apiUrl(path: '/api/github' | '/api/spotify' | '/api/visitors'): string {
+export function apiUrl(path: '/api/github' | '/api/spotify' | '/api/visitors' | '/api/analytics'): string {
   const origin = import.meta.env.VITE_VERCEL_API_ORIGIN
   if (typeof window !== 'undefined' && origin) {
     return `${origin.replace(/\/$/, '')}${path}`

@@ -126,7 +126,7 @@ function Page() {
                   />
                 </div>
                 <div className="mt-3 overflow-x-auto">
-                  <img key={loaderDone} src={`https://github.pumbas.net/api/contributions/${githubUsername}?colour=FB7185`} alt={`${githubUsername}'s GitHub contributions`} />
+                  <img key={String(loaderDone)} src={`https://github.pumbas.net/api/contributions/${githubUsername}?colour=FB7185`} alt={`${githubUsername}'s GitHub contributions`} />
                 </div>
                 <a
                   href={profile.github}

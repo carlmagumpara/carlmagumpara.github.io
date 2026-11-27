@@ -15,6 +15,7 @@ Visitor on carlmagumpara.github.io
         ├─ HTML / CSS / JS / images ──► GitHub Pages (static, built by Actions)
         │
         ├─ /api/github, /api/spotify ─► Vercel functions (cross-origin fetch)
+        ├─ /api/visitors, /api/analytics ► Vercel functions (Upstash-backed)
         │
         └─ WebSocket /api/cursor ─────► Vercel function (cursors / presence / hearts)
 ```
@@ -118,6 +119,13 @@ endpoints must stay deployed on Vercel:
 | `/api/github` | `api/github.mjs` | Live GitHub profile / follower count |
 | `/api/spotify` | `api/spotify.mjs` | Live "last played" track |
 | `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors, visitor count, and sent hearts |
+| `/api/visitors` | `api/visitors.mjs` | Unique visitor counter (total + today) |
+| `/api/analytics` | `api/analytics.mjs` | Page-view/click events and aggregates for `/analytics` |
+
+The `/analytics` page shows total views, daily views, top pages, most-clicked
+elements, and a viewport heat map. It uses the same Upstash Redis credentials as
+the visitor counter — no new secrets are needed. See `_docs/analytics.md` for
+the key layout and tracking details.
 
 `vercel.json` still governs this deployment:
 
@@ -344,8 +352,12 @@ runtime routing is working as intended.
 | `lib/api.ts` | Reads `VITE_VERCEL_API_ORIGIN` / `VITE_CURSOR_WS_URL` to route API/WS calls to Vercel |
 | `.env.example` | Sample values for the build-time `VITE_*` variables |
 | `api/github.mjs`, `api/spotify.mjs`, `api/cursor.mjs` | Vercel serverless functions / socket |
+| `api/visitors.mjs`, `api/analytics.mjs` | Vercel functions backed by Upstash Redis |
+| `lib/analytics.mjs`, `lib/analytics-client.ts` | Analytics storage/aggregation and shared client types |
+| `components/AnalyticsTracker.tsx` | Records page views and batched clicks |
 | `data/github.json`, `data/last-played.json` | Build-time data and fallback |
 
 Related notes: `_docs/GITHUB_PAGES_SETUP.md` (implementation notes),
-`_docs/GITHUB_SETUP.md`, `_docs/SPOTIFY_SETUP.md`, `_docs/cursor-tracking.md`.
+`_docs/GITHUB_SETUP.md`, `_docs/SPOTIFY_SETUP.md`, `_docs/cursor-tracking.md`,
+`_docs/visitor-counter.md`, `_docs/analytics.md`.
 

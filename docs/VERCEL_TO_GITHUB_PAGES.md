@@ -10,6 +10,7 @@ Visitor on carlmagumpara.github.io
         ├─ HTML / CSS / JS / images ──► GitHub Pages (static, built by Actions)
         │
         ├─ /api/github, /api/spotify ─► Vercel functions (cross-origin fetch)
+        ├─ /api/visitors, /api/analytics ► Vercel functions (Upstash-backed)
         │
         └─ WebSocket /api/cursor ─────► Vercel function (live cursors / presence)
 ```
@@ -30,11 +31,13 @@ endpoints must stay deployed on Vercel:
 | `/api/spotify` | `api/spotify.mjs` | Live "last played" track |
 | `/api/cursor` | `api/cursor.mjs` | WebSocket hub for live cursors and visitor count |
 | `/api/visitors` | `api/visitors.mjs` | Persistent unique visitor counter (total + today) |
+| `/api/analytics` | `api/analytics.mjs` | View/click event ingestion and dashboard aggregates |
 
-The unique visitor counter is backed by Upstash Redis (see
-`_docs/visitor-counter.md` for setup). The browser sends a persistent `visitor:id`
-from `localStorage` to `/api/visitors`; the function stores an HMAC of it in a
-Redis set, so repeat visits are deduplicated. These credentials are **server-only**
+The unique visitor counter and the `/analytics` dashboard are backed by the same
+Upstash Redis database (see `_docs/visitor-counter.md` and `_docs/analytics.md`).
+The visitor counter sends a persistent `visitor:id` from `localStorage` and stores
+only an HMAC of it, so repeat visits are deduplicated. Analytics counts pageviews
+and clicks without storing a browser id. These credentials are **server-only**
 and are set in Vercel, not in GitHub Actions.
 
 `vercel.json` still governs this deployment. It also redirects browser traffic
@@ -59,8 +62,9 @@ to GitHub Pages, while leaving the API routes reachable:
 The rule fires only for `*.vercel.app` hosts (production **and** preview
 deployments) and sends a `308` to the same path on `carlmagumpara.github.io`
 (query strings pass through). The negative lookahead `(?!api/)` keeps
-`/api/github`, `/api/spotify`, and `/api/cursor` exempt so the GitHub Pages site
-can still call the live Vercel functions and WebSocket. Requests to custom
+`/api/github`, `/api/spotify`, `/api/visitors`, `/api/analytics`, and
+`/api/cursor` exempt so the GitHub Pages site can still call the live Vercel
+functions and WebSocket. Requests to custom
 domains and `localhost` are unaffected. Note that Vercel's `has` host matching
 works when deployed but **not** under `vercel dev`, so local dev never redirects.
 
