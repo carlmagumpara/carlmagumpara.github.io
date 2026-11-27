@@ -42,6 +42,7 @@ function Page() {
                   <nav aria-label="Jump to section" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
                     <a href="/work-experience" className="link-brand">Work Experience →</a>
                     <a href="/projects" className="link-brand">Projects →</a>
+                    <a href="/get-in-touch" className="link-brand">Get in touch →</a>
                   </nav>
                 </div>
 
@@ -93,9 +94,6 @@ function Page() {
                     I build and maintain full-stack systems—web, APIs, and mobile—focused on quality and long-term
                     maintainability.
                   </p>
-                  <a href={`mailto:${profile.email}`} className="link-brand mt-3 text-sm font-semibold">
-                    Get in touch →
-                  </a>
                 </Card>
               </div>
 
