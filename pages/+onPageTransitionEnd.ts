@@ -1,5 +1,5 @@
-import { endPageSlide } from '../lib/page-transition'
+import { endBoxTransition } from '../lib/page-transition'
 
 export function onPageTransitionEnd() {
-  endPageSlide()
+  endBoxTransition()
 }

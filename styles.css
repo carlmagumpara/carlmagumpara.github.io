@@ -56,8 +56,55 @@ body {
   overflow-x: hidden;
 }
 
-/* Route changes slide .page-content horizontally (see lib/page-transition.ts).
-   Clipping the viewport keeps the off-screen page from adding a scrollbar. */
+/* 3D box page transition ------------------------------------------------ */
+/* A fixed stage holds snapshots of the outgoing and incoming pages as two
+   adjacent faces of a CSS 3D box. The box rotation itself is driven by
+   lib/page-transition.ts; the live [data-page-content] node is only hidden
+   while the stage covers it, so React/Vike keep control of the real DOM. */
+.box-transition-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 45; /* beneath the fixed heart/theme controls (z-50) */
+  overflow: hidden;
+  pointer-events: none;
+  perspective: 1500px;
+  perspective-origin: center center;
+}
+.box-transition-box {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.box-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: var(--page-bg);
+  will-change: transform;
+}
+.box-face__content {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  visibility: visible !important;
+}
+.box-face__shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklab, #000 55%, transparent),
+    transparent 42%,
+    color-mix(in oklab, #000 28%, transparent)
+  );
+}
 
 /* Headings: tighter tracking for a crisp, professional hierarchy. */
 h1, h2, h3, h4, h5, h6 {
