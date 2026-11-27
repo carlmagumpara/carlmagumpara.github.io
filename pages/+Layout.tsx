@@ -4,6 +4,7 @@ import { ThemeToggle } from '../components/ThemeToggle'
 import { HeartButton } from '../components/HeartButton'
 import { FloatingHearts } from '../components/FloatingHearts'
 import { LiveCursors } from '../components/LiveCursors'
+import NeonCursor from '../components/NeonCursor'
 import { LivePresenceProvider } from '../components/LivePresence'
 import { LiveVisitors } from '../components/LiveVisitors'
 import { UniqueVisitors } from '../components/UniqueVisitors'
@@ -22,6 +23,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         <ThemeToggle />
       </div>
       <LiveCursors />
+      <NeonCursor />
       <FloatingHearts />
       <div className="visitor-stats">
         <UniqueVisitors />

@@ -16,6 +16,15 @@
   --card-shadow: 0 1px 3px rgb(0 0 0 / 0.05), 0 8px 24px rgb(0 0 0 / 0.04);
   --card-shadow-hover: 0 2px 6px rgb(0 0 0 / 0.06), 0 12px 32px rgb(0 0 0 / 0.08);
   --toggle-shadow: 0 4px 16px rgb(0 0 0 / 0.15);
+
+  /* Neon cursor: palette, glow intensity (multiplier), and sizes. */
+  --neon-color: #22d3ee;
+  --neon-color-2: #a855f7;
+  --neon-glow: 1;
+  --neon-core-size: 7px;
+  --neon-halo-size: 34px;
+  --neon-dot-size: 16px;
+  --neon-ring-size: 26px;
 }
 
 html.dark {
@@ -531,6 +540,125 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: translateX(100%); }
 }
 
+/* Neon cursor ----------------------------------------------------------- */
+/* The whole layer is visual only — it never receives pointer events. */
+html.neon-cursor-active,
+html.neon-cursor-active * {
+  cursor: none !important;
+}
+/* Keep a familiar I-beam where text is actually typed. */
+html.neon-cursor-active input:not([type='button']):not([type='submit']):not([type='checkbox']):not([type='radio']),
+html.neon-cursor-active textarea,
+html.neon-cursor-active [contenteditable='true'] {
+  cursor: text !important;
+}
+
+.neon-cursor {
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.neon-cursor[data-visible='true'] {
+  opacity: 1;
+}
+.neon-cursor[data-text='true'],
+.neon-cursor[data-visible='false'] {
+  opacity: 0;
+}
+
+.neon-cursor__core,
+.neon-cursor__halo,
+.neon-cursor__dot,
+.neon-cursor__ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Bright white centre with layered cyan/purple bloom. */
+.neon-cursor__core {
+  width: var(--neon-core-size);
+  height: var(--neon-core-size);
+  background-color: #ffffff;
+  box-shadow:
+    0 0 calc(6px * var(--neon-glow)) calc(1px * var(--neon-glow)) var(--neon-color),
+    0 0 calc(18px * var(--neon-glow)) calc(5px * var(--neon-glow)) color-mix(in oklab, var(--neon-color) 55%, transparent),
+    0 0 calc(38px * var(--neon-glow)) calc(10px * var(--neon-glow)) color-mix(in oklab, var(--neon-color-2) 35%, transparent);
+  transition: width 200ms ease, height 200ms ease, box-shadow 200ms ease;
+}
+.neon-cursor__core--pulse {
+  animation: neon-core-pulse 420ms ease-out;
+}
+@keyframes neon-core-pulse {
+  0% { scale: 1; }
+  35% { scale: 1.9; }
+  100% { scale: 1; }
+}
+
+/* Thin orbit ring around the core; swells over interactive elements. */
+.neon-cursor__halo {
+  width: var(--neon-halo-size);
+  height: var(--neon-halo-size);
+  border: 1px solid color-mix(in oklab, var(--neon-color) 55%, transparent);
+  background: radial-gradient(circle, color-mix(in oklab, var(--neon-color) 12%, transparent) 0%, transparent 68%);
+  box-shadow:
+    inset 0 0 calc(12px * var(--neon-glow)) color-mix(in oklab, var(--neon-color) 30%, transparent),
+    0 0 calc(20px * var(--neon-glow)) color-mix(in oklab, var(--neon-color-2) 30%, transparent);
+  transition: scale 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+.neon-cursor[data-hover='true'] .neon-cursor__halo {
+  scale: 1.55;
+  border-color: var(--neon-color-2);
+  box-shadow:
+    inset 0 0 calc(18px * var(--neon-glow)) color-mix(in oklab, var(--neon-color) 45%, transparent),
+    0 0 calc(34px * var(--neon-glow)) color-mix(in oklab, var(--neon-color-2) 55%, transparent);
+}
+.neon-cursor[data-hover='true'] .neon-cursor__core {
+  width: calc(var(--neon-core-size) * 1.6);
+  height: calc(var(--neon-core-size) * 1.6);
+}
+
+/* Fading trail — size and opacity taper with --trail-index. */
+.neon-cursor__dot {
+  width: calc(var(--neon-dot-size) - var(--trail-index) * 0.9px);
+  height: calc(var(--neon-dot-size) - var(--trail-index) * 0.9px);
+  background: radial-gradient(circle, var(--neon-color) 0%, var(--neon-color-2) 45%, transparent 72%);
+  opacity: calc(0.42 - var(--trail-index) * 0.028);
+  filter: blur(1.5px);
+}
+.neon-cursor[data-hover='true'] .neon-cursor__dot {
+  opacity: calc(0.62 - var(--trail-index) * 0.035);
+}
+
+/* Expanding ripple created on each click. */
+.neon-cursor__ring {
+  width: var(--neon-ring-size);
+  height: var(--neon-ring-size);
+  border: 2px solid var(--neon-color);
+  box-shadow:
+    0 0 calc(14px * var(--neon-glow)) var(--neon-color),
+    inset 0 0 calc(10px * var(--neon-glow)) color-mix(in oklab, var(--neon-color-2) 50%, transparent);
+  animation: neon-ring 520ms cubic-bezier(0.16, 0.8, 0.3, 1) forwards;
+}
+@keyframes neon-ring {
+  from { opacity: 0.85; scale: 0.4; }
+  to { opacity: 0; scale: 2.8; }
+}
+
+/* Touch devices keep the native cursor, and reduced motion removes the effect. */
+@media (hover: none), (pointer: coarse) {
+  .neon-cursor {
+    display: none;
+  }
+  html.neon-cursor-active,
+  html.neon-cursor-active * {
+    cursor: auto !important;
+  }
+}
+
 /* Live cursors ---------------------------------------------------------- */
 .cursor-overlay {
   position: fixed;
@@ -704,5 +832,8 @@ h1, h2, h3, h4, h5, h6 {
   .loader-fill,
   .remote-cursor {
     transition-duration: 0.01ms;
+  }
+  .neon-cursor {
+    display: none;
   }
 }
