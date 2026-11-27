@@ -1,6 +1,6 @@
 import { Badges, Card, Eyebrow, GroupLabel } from '../../components/Card'
 import { CopyEmail } from '../../components/CopyEmail'
-import { FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } from 'react-icons/fa'
+import { FaCommentDots, FaDiscord, FaFacebookF, FaGithub, FaLinkedin, FaPhone } from 'react-icons/fa'
 import { LastPlayedBanner } from '../../components/LastPlayedBanner'
 import { GitHubFollowers } from '../../components/GitHubFollowers'
 import { LocalTime } from '../../components/LocalTime'
@@ -42,7 +42,6 @@ function Page() {
                   <nav aria-label="Jump to section" className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
                     <a href="/work-experience" className="link-brand">Work Experience →</a>
                     <a href="/projects" className="link-brand">Projects →</a>
-                    <a href="/get-in-touch" className="link-brand">Get in touch →</a>
                   </nav>
                 </div>
 
@@ -61,28 +60,36 @@ function Page() {
                       <FaPhone /> {profile.phone}
                     </li>
                   </ul>
-                  <ul className="mt-4 flex justify-center gap-4 text-2xl">
-                    <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
-                      <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
-                        <FaGithub />
-                      </a>
-                    </li>
-                    <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
-                      <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
-                        <FaLinkedin />
-                      </a>
-                    </li>
-                    <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
-                      <a href={profile.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
-                        <FaFacebookF />
-                      </a>
-                    </li>
-                    <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
-                      <a href={profile.discord} target="_blank" rel="noreferrer" aria-label="Discord">
-                        <FaDiscord />
-                      </a>
-                    </li>
-                  </ul>
+                  <div className="mt-4 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                    <ul className="flex items-center gap-2 text-base">
+                      <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
+                        <a href={profile.github} target="_blank" rel="noreferrer" aria-label="GitHub">
+                          <FaGithub />
+                        </a>
+                      </li>
+                      <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
+                        <a href={profile.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">
+                          <FaLinkedin />
+                        </a>
+                      </li>
+                      <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
+                        <a href={profile.facebook} target="_blank" rel="noreferrer" aria-label="Facebook">
+                          <FaFacebookF />
+                        </a>
+                      </li>
+                      <li className="transition-all ease-in-out hover:scale-110 hover:text-brand-start">
+                        <a href={profile.discord} target="_blank" rel="noreferrer" aria-label="Discord">
+                          <FaDiscord />
+                        </a>
+                      </li>
+                    </ul>
+                    <a
+                      href="/get-in-touch"
+                      className="group inline-flex items-center gap-2 link-brand"
+                    >
+                      Send a Message →
+                    </a>
+                  </div>
                 </Card>
               </div>
 
