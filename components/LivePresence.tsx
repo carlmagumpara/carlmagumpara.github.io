@@ -1,7 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { cursorUrl } from '../lib/api'
+import { apiUrl, cursorUrl } from '../lib/api'
 import type { CursorUser } from '../lib/cursor-hub.mjs'
+import { getVisitorId, type VisitorStats } from '../lib/visitor'
 
 export type PresenceStatus = 'connecting' | 'online' | 'offline'
 
@@ -22,6 +23,8 @@ type PresenceContextValue = {
   status: PresenceStatus
   /** Hearts received from other visitors, newest last. */
   hearts: ReceivedHeart[]
+  /** All-time and daily unique counts, refreshed live as visits come in. */
+  visitorStats: VisitorStats | null
   /** Broadcast a heart to everyone else on the page. */
   sendHeart: () => void
 }
@@ -32,7 +35,36 @@ const ID_KEY = 'cursor:id'
 const SEND_INTERVAL_MS = 33 // ~30 updates/sec
 const HEART_TTL_MS = 2600 // long enough for the float/fade animation
 const MAX_VISIBLE_HEARTS = 8
+const VISITOR_STATS_REFRESH_MS = 60_000
+const MAX_VISITOR_COUNT = 1_000_000_000
 const HEX_COLOR = /^#[0-9a-f]{6}$/i
+
+/** Shared initial request so React's double-invoked dev effects only POST once. */
+let initialStatsFetch: Promise<VisitorStats | null> | null = null
+
+function isValidCount(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0 && value <= MAX_VISITOR_COUNT
+}
+
+async function requestVisitorStats(): Promise<VisitorStats | null> {
+  try {
+    const response = await fetch(apiUrl('/api/visitors'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: getVisitorId(),
+      keepalive: true
+    })
+    if (!response.ok) return null
+    const data: unknown = await response.json()
+    if (!data || typeof data !== 'object') return null
+    const { total, today } = data as Record<string, unknown>
+    if (!isValidCount(total) || !isValidCount(today)) return null
+    return { total, today }
+  } catch {
+    // The badge stays hidden until a later refresh succeeds.
+    return null
+  }
+}
 const COLORS = ['#a78bfa', '#34d399', '#f472b6', '#fbbf24', '#60a5fa', '#fb7185', '#22d3ee', '#a3e635']
 const NAMES = [
   'Fox', 'Otter', 'Panda', 'Heron', 'Lynx', 'Koala', 'Falcon', 'Badger',
@@ -84,6 +116,7 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<CursorUser[]>([])
   const [status, setStatus] = useState<PresenceStatus>('connecting')
   const [hearts, setHearts] = useState<ReceivedHeart[]>([])
+  const [visitorStats, setVisitorStats] = useState<VisitorStats | null>(null)
   // The socket lives inside the effect below; this ref lets the button send a
   // heart without opening a second connection.
   const sendHeartRef = useRef<() => void>(() => {})
@@ -106,6 +139,35 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
     function send(payload: object) {
       if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify(payload))
     }
+
+    // The fresh count from this client's POST is relayed to peers over the same
+    // socket, so everyone sees the badge tick up without reloading. A slow
+    // periodic refresh reconciles peers that landed on another function instance.
+    const statsRef: { current: VisitorStats | null } = { current: null }
+    const lastAnnounced = { total: -1, today: -1 }
+
+    function announceStats(stats: VisitorStats | null, force = false) {
+      if (!stats) return
+      if (!force && stats.total === lastAnnounced.total && stats.today === lastAnnounced.today) return
+      lastAnnounced.total = stats.total
+      lastAnnounced.today = stats.today
+      send({ type: 'visitor-stats', total: stats.total, today: stats.today })
+    }
+
+    function applyStats(stats: VisitorStats | null, forceAnnounce = false) {
+      if (!stats) return
+      statsRef.current = stats
+      setVisitorStats(stats)
+      announceStats(stats, forceAnnounce)
+    }
+
+    if (!initialStatsFetch) initialStatsFetch = requestVisitorStats()
+    void initialStatsFetch.then((stats) => applyStats(stats))
+
+    const statsTimer = setInterval(() => {
+      if (cancelled) return
+      void requestVisitorStats().then((stats) => applyStats(stats))
+    }, VISITOR_STATS_REFRESH_MS)
 
     sendHeartRef.current = () => {
       const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`
@@ -150,6 +212,8 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
             visible: hasMoved && visible
           })
         )
+        // Re-announce on every (re)connect; the hub rate-limits duplicates.
+        announceStats(statsRef.current, true)
       })
 
       current.addEventListener('message', (event: MessageEvent<string>) => {
@@ -165,6 +229,12 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
           setUsers(
             (message.users as CursorUser[]).filter((user) => user?.clientId && user.clientId !== me.clientId)
           )
+          return
+        }
+
+        if (message.type === 'visitor-stats' && isValidCount(message.total) && isValidCount(message.today)) {
+          statsRef.current = { total: message.total, today: message.today }
+          setVisitorStats(statsRef.current)
           return
         }
 
@@ -261,6 +331,7 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
       cancelled = true
       sendHeartRef.current = () => {}
       if (reconnectTimer) clearTimeout(reconnectTimer)
+      clearInterval(statsTimer)
       for (const timer of heartTimers) clearTimeout(timer)
       heartTimers.clear()
       window.removeEventListener('mousemove', onMouseMove)
@@ -285,9 +356,10 @@ export function LivePresenceProvider({ children }: { children: ReactNode }) {
       count: status === 'online' ? users.length + 1 : 0,
       status,
       hearts,
+      visitorStats,
       sendHeart
     }),
-    [users, status, hearts, sendHeart]
+    [users, status, hearts, visitorStats, sendHeart]
   )
 
   return <PresenceContext.Provider value={value}>{children}</PresenceContext.Provider>
