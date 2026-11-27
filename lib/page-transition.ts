@@ -1,31 +1,86 @@
-// Shared helpers for the Vike page-transition hooks. The attribute is toggled
-// on <body> so CSS can fade only the routed content (not the fixed controls).
-const FADE_OUT_MS = 100
+// Shared helpers for the Vike page-transition hooks. The routed content is
+// animated horizontally while the fixed controls in +Layout stay in place.
+const SLIDE_OUT_MS = 200
+const SLIDE_IN_MS = 220
 const SAFETY_TIMEOUT_MS = 1000
 
 let safetyTimer: number | undefined
+let slideDirection: -1 | 1 = -1 // -1 = forward (out left / in from right)
 
-/** Fade the current page out, then let Vike render the next one. */
-export function beginPageFade(): Promise<void> {
-  if (typeof document === 'undefined' || typeof window === 'undefined') return Promise.resolve()
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    endPageFade()
+function getContent(): HTMLElement | null {
+  if (typeof document === 'undefined') return null
+  return document.querySelector<HTMLElement>('[data-page-content]')
+}
+
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+/**
+ * Slide the current page out of view, then let Vike render the next one.
+ * Forward navigation exits left; going back exits right.
+ */
+export function beginPageSlide(isBackwardNavigation?: boolean | null): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve()
+
+  // Leaving the home page means moving forward into a section. Any other
+  // starting route (or a browser Back action) is treated as going back, which
+  // also covers the "← Back to home" link in SectionPage.
+  const isBackward = Boolean(isBackwardNavigation) || window.location.pathname !== '/'
+  slideDirection = isBackward ? 1 : -1
+
+  if (prefersReducedMotion()) {
+    endPageSlide()
     return Promise.resolve()
   }
 
-  document.body.dataset.pageTransition = 'out'
-  // If a navigation is aborted (e.g. a rapid second click), no end hook will
-  // run. Clear the attribute eventually so the page can never stay hidden.
-  window.clearTimeout(safetyTimer)
-  safetyTimer = window.setTimeout(endPageFade, SAFETY_TIMEOUT_MS)
+  const el = getContent()
+  if (!el) return Promise.resolve()
 
-  return new Promise((resolve) => window.setTimeout(resolve, FADE_OUT_MS))
+  // Cancel any still-running transition before starting a new one (e.g. a
+  // rapid second click) so animations don't stack on the same element.
+  el.getAnimations().forEach((animation) => animation.cancel())
+
+  const exitX = slideDirection === -1 ? '-100%' : '100%'
+  const outgoing = el.animate(
+    [
+      { transform: 'translateX(0)', opacity: 1 },
+      { transform: `translateX(${exitX})`, opacity: 0 }
+    ],
+    { duration: SLIDE_OUT_MS, easing: 'ease-in', fill: 'forwards' }
+  )
+
+  // If navigation is aborted (e.g. a rapid second click), no end hook runs.
+  // Clear the held transform eventually so the page can never stay hidden.
+  window.clearTimeout(safetyTimer)
+  safetyTimer = window.setTimeout(endPageSlide, SAFETY_TIMEOUT_MS)
+
+  // `finished` rejects when the animation is cancelled by endPageSlide or the
+  // safety timeout; either way the outgoing phase is over.
+  return outgoing.finished.then(
+    () => undefined,
+    () => undefined
+  )
 }
 
-/** Restore the page opacity once the new page has rendered. */
-export function endPageFade(): void {
-  if (typeof document === 'undefined') return
+/** Slide the freshly rendered page in from the opposite side. */
+export function endPageSlide(): void {
+  if (typeof window === 'undefined') return
   window.clearTimeout(safetyTimer)
   safetyTimer = undefined
-  delete document.body.dataset.pageTransition
+
+  const el = getContent()
+  // Drop the held exit transform before animating the new content in.
+  el?.getAnimations().forEach((animation) => animation.cancel())
+
+  if (!el || prefersReducedMotion()) return
+
+  const enterX = slideDirection === -1 ? '100%' : '-100%'
+  el.animate(
+    [
+      { transform: `translateX(${enterX})`, opacity: 0 },
+      { transform: 'translateX(0)', opacity: 1 }
+    ],
+    { duration: SLIDE_IN_MS, easing: 'ease-out' }
+  )
 }

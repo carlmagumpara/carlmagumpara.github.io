@@ -1,5 +1,5 @@
-import { endPageFade } from '../lib/page-transition'
+import { endPageSlide } from '../lib/page-transition'
 
 export function onPageTransitionEnd() {
-  endPageFade()
+  endPageSlide()
 }

@@ -45,6 +45,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   background-color: var(--page-bg);
+  overflow-x: hidden;
 }
 
 body {
@@ -52,16 +53,11 @@ body {
   background-color: var(--page-bg);
   color: var(--base-content);
   transition: background-color 0.2s ease, color 0.2s ease;
+  overflow-x: hidden;
 }
 
-/* Route change fade, driven by +onPageTransitionStart/End. */
-.page-content {
-  transition: opacity 120ms ease;
-}
-body[data-page-transition='out'] .page-content {
-  opacity: 0;
-  transition-duration: 100ms;
-}
+/* Route changes slide .page-content horizontally (see lib/page-transition.ts).
+   Clipping the viewport keeps the off-screen page from adding a scrollbar. */
 
 /* Headings: tighter tracking for a crisp, professional hierarchy. */
 h1, h2, h3, h4, h5, h6 {
@@ -571,8 +567,7 @@ h1, h2, h3, h4, h5, h6 {
   .loader-overlay,
   .loader-content,
   .loader-fill,
-  .remote-cursor,
-  .page-content {
+  .remote-cursor {
     transition-duration: 0.01ms;
   }
 }
