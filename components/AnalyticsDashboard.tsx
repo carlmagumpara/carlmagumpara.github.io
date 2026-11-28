@@ -115,7 +115,7 @@ export function AnalyticsDashboard() {
 
   return (
     <div className="space-y-4" data-analytics-ignore>
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         <StatCard
           label="Total views"
           value={stats.totals.views}
@@ -128,6 +128,11 @@ export function AnalyticsDashboard() {
         />
         <StatCard label="Total clicks" value={stats.totals.clicks} hint="All tracked clicks" />
         <StatCard label="Unique visitors" value={visitorStats?.total ?? 0} hint="All-time, deduplicated" />
+        <StatCard
+          label="From Facebook"
+          value={stats.totals.facebookViews}
+          hint={`${stats.totals.views ? Math.round((stats.totals.facebookViews / stats.totals.views) * 100) : 0}% of views · fbclid`}
+        />
       </div>
 
       <Card>

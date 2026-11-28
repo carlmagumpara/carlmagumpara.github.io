@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { usePageContext } from 'vike-react/usePageContext'
-import { normalizeAnalyticsPath, type AnalyticsEvent } from '../lib/analytics-client'
+import { isFacebookVisit, normalizeAnalyticsPath, type AnalyticsEvent } from '../lib/analytics-client'
 import { apiUrl } from '../lib/api'
 
 const FLUSH_INTERVAL_MS = 4_000
@@ -118,7 +118,7 @@ export function AnalyticsTracker() {
   useEffect(() => {
     if (!path || seenPaths.has(path)) return
     seenPaths.add(path)
-    enqueue({ type: 'view', path })
+    enqueue({ type: 'view', path, source: isFacebookVisit() ? 'facebook' : undefined })
   }, [path])
 
   useEffect(() => {
