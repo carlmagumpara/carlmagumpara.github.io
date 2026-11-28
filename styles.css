@@ -153,6 +153,84 @@ h1, h2, h3, h4, h5, h6 {
   outline-offset: 3px;
 }
 
+/* Full-screen zoom effect ------------------------------------------------ */
+/* A full-screen wash plus a sun/moon/heart image zoom after a theme toggle
+   or a heart send. It sits above page content but below the fixed controls so
+   the buttons stay visible and clickable while the animation plays. */
+.zoom-effect {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.zoom-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  animation: zoom-wash 800ms ease-out forwards;
+}
+
+.zoom-effect[data-effect='sun']::before {
+  background: radial-gradient(
+    circle at center,
+    rgb(254 243 199 / 0.95),
+    rgb(253 224 71 / 0.45) 45%,
+    transparent 75%
+  );
+}
+
+.zoom-effect[data-effect='moon']::before {
+  background: radial-gradient(
+    circle at center,
+    rgb(30 41 59 / 0.95),
+    rgb(15 23 42 / 0.6) 45%,
+    transparent 75%
+  );
+}
+
+.zoom-effect[data-effect='heart']::before {
+  background: radial-gradient(
+    circle at center,
+    rgb(255 228 230 / 0.9),
+    rgb(244 63 94 / 0.35) 45%,
+    transparent 75%
+  );
+}
+
+.zoom-effect__image {
+  position: relative;
+  width: min(32vw, 240px);
+  height: min(32vw, 240px);
+  object-fit: contain;
+  will-change: transform, opacity;
+  animation: zoom-image 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.zoom-effect[data-effect='moon'] .zoom-effect__image {
+  filter: drop-shadow(0 0 24px rgb(147 197 253 / 0.55));
+}
+
+.zoom-effect[data-effect='heart'] .zoom-effect__image {
+  filter: drop-shadow(0 0 24px rgb(251 113 133 / 0.6));
+}
+
+@keyframes zoom-wash {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes zoom-image {
+  0% { opacity: 0; transform: scale(0.3); }
+  25% { opacity: 1; transform: scale(1); }
+  65% { opacity: 1; transform: scale(1.6); }
+  100% { opacity: 0; transform: scale(3.2); }
+}
+
 /* Heart button: same floating pill as the theme toggle, with a brief ping to
    acknowledge the click (other visitors get the floating heart instead). */
 .heart-button {
@@ -815,6 +893,9 @@ html.neon-cursor-active [contenteditable='true'] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .zoom-effect {
+    display: none;
+  }
   .avatar-status,
   .avatar-status::before,
   .loader-overlay::before,

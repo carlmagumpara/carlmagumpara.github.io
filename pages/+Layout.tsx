@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react'
 import { Loader } from '../components/Loader'
 import { LoaderContext } from '../components/LoaderContext'
 import { ThemeToggle } from '../components/ThemeToggle'
+import { ZoomEffects } from '../components/ZoomEffects'
 import { HeartButton } from '../components/HeartButton'
 import { FloatingHearts } from '../components/FloatingHearts'
 import { LiveCursors } from '../components/LiveCursors'
@@ -24,6 +25,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <LivePresenceProvider>
         <AnalyticsTracker />
         <Loader onDone={handleLoaderDone} />
+        <ZoomEffects />
         {/* Both controls share one fixed anchor so they stay side by side. */}
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 sm:top-6 sm:right-6">
           <HeartButton />

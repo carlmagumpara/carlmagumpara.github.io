@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FiMoon, FiSun } from 'react-icons/fi'
+import { THEME_CHANGE_EVENT } from './ZoomEffects'
 
 export function ThemeToggle() {
   // Start from the light state on both server and client so hydration stays
@@ -20,6 +21,9 @@ export function ThemeToggle() {
       // for the rest of this visit.
     }
     setDark(isDark)
+    window.dispatchEvent(
+      new CustomEvent(THEME_CHANGE_EVENT, { detail: isDark ? 'dark' : 'light' })
+    )
   }
 
   const label = dark ? 'Switch to light mode' : 'Switch to dark mode'

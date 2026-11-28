@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bfdbfe" stop-opacity="0.75" />
+      <stop offset="55%" stop-color="#6366f1" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#6366f1" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="core" x1="60" y1="40" x2="200" y2="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="55%" stop-color="#dbeafe" />
+      <stop offset="100%" stop-color="#93c5fd" />
+    </linearGradient>
+    <mask id="crescent">
+      <rect width="256" height="256" fill="#fff" />
+      <circle cx="168" cy="92" r="82" fill="#000" />
+    </mask>
+  </defs>
+
+  <circle cx="128" cy="128" r="126" fill="url(#glow)" />
+
+  <circle cx="128" cy="128" r="88" fill="url(#core)" mask="url(#crescent)" />
+  <circle cx="128" cy="128" r="88" stroke="#e0e7ff" stroke-opacity="0.5" stroke-width="3" mask="url(#crescent)" />
+
+  <g fill="#e0e7ff">
+    <circle cx="194" cy="176" r="5" />
+    <circle cx="212" cy="146" r="3" />
+    <circle cx="180" cy="206" r="3" />
+  </g>
+</svg>
