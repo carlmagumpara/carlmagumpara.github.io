@@ -19,6 +19,19 @@ function Page() {
                 </a>
               </h2>
               <p className="text-muted mt-1 text-sm">{project.description}</p>
+              {project.images.length > 0 && (
+                <div className="mt-3 grid grid-cols-1 gap-2">
+                  {project.images.map((image) => (
+                    <img
+                      key={image}
+                      src={image}
+                      alt={`${project.name} screenshot`}
+                      loading="lazy"
+                      className="bg-base-200 h-36 w-full rounded-lg border border-base-200 object-contain"
+                    />
+                  ))}
+                </div>
+              )}
               <div className="mt-3">
                 <Badges items={project.tags} />
               </div>

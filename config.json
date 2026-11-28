@@ -80,28 +80,67 @@
   ],
   "projects": [
     {
-      "name": "LexMeet Website",
+      "name": "LexMeet",
       "description": "The official LexMeet web platform.",
       "href": "https://lexmeet.com",
-      "tags": ["Website", "Web"]
+      "tags": ["Website", "Web"],
+      "images": ["/projects/lexmeet-web.png"]
     },
     {
       "name": "LexMeet for Android",
       "description": "LexMeet's Android app on Google Play.",
       "href": "https://play.google.com/store/apps/details?id=com.lexmeet&hl=en",
-      "tags": ["Android", "Google Play"]
+      "tags": ["Android", "Google Play"],
+      "images": ["/projects/lexmeet-android.png"]
     },
     {
       "name": "LexMeet for iOS",
       "description": "LexMeet: Legal Help Simplified on the App Store.",
       "href": "https://apps.apple.com/ph/app/lexmeet-legal-help-simplified/id1451815948",
-      "tags": ["iOS", "App Store"]
+      "tags": ["iOS", "App Store"],
+      "images": ["/projects/lexmeet-ios.png"]
     },
     {
-      "name": "E-Law Solutions Website",
+      "name": "E-Law Solutions",
       "description": "The official E-Law Solutions web platform.",
       "href": "https://www.e-lawsolutions.com",
-      "tags": ["Website", "Web"]
+      "tags": ["Website", "Web"],
+      "images": ["/projects/e-law-solutions.png"]
+    },
+    {
+      "name": "Neon Drive",
+      "description": "A real-time multiplayer driving tag game — start a room, share a six-character code, and drift through a shared city with friends.",
+      "href": "#",
+      "tags": ["Web App", "Multiplayer", "Game"],
+      "images": ["/projects/neon-drive-1.png", "/projects/neon-drive-2.png"]
+    },
+    {
+      "name": "Nostalgic Tunes",
+      "description": "A personal music library for uploading, organizing, and streaming songs, albums, artists, and genres.",
+      "href": "#",
+      "tags": ["Web App", "Music"],
+      "images": ["/projects/nostalgic-tunes.png"]
+    },
+    {
+      "name": "TechMeetsLegal",
+      "description": "A legal-tech portal helping new and practicing lawyers explore technology for legal practice.",
+      "href": "#",
+      "tags": ["Website", "Legal Tech"],
+      "images": ["/projects/techmeetslegal.png"]
+    },
+    {
+      "name": "Z-Call",
+      "description": "Browser-based peer-to-peer video calls — create a room, share a link, and start talking with no account or download.",
+      "href": "#",
+      "tags": ["Web App", "WebRTC", "Realtime"],
+      "images": ["/projects/z-call.png"]
+    },
+    {
+      "name": "Z-Drop",
+      "description": "Secure peer-to-peer file sharing with chat — create a private room and send files instantly, with no limits or delays.",
+      "href": "#",
+      "tags": ["Web App", "P2P", "Realtime"],
+      "images": ["/projects/z-drop-1.png", "/projects/z-drop-2.png"]
     }
   ]
 }
