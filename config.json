@@ -124,7 +124,7 @@
     {
       "name": "TECHNOLOGY meets LEGAL PRACTICE",
       "description": "An interactive scrollytelling site for ELSA (E-Law Solutions App), a web application that helps lawyers and law offices manage their day-to-day activities.",
-      "href": "#",
+      "href": "https://techmeetslegal.vercel.app",
       "tags": ["Website", "Legal Tech"],
       "images": ["/projects/techmeetslegal.png"]
     },
