@@ -3,10 +3,9 @@ import { useLoaderDone } from './LoaderContext'
 
 /**
  * First-load effect: a single fake cursor visits every card in turn, picks it
- * up and drags it into its real layout position. Runs once per browser session
- * and only after the splash loader has fully exited.
+ * up and drags it into its real layout position. Runs on every full page load
+ * once the splash loader has fully exited.
  */
-const STORAGE_KEY = 'card-intro-played'
 const GRAB_INSET_X = 26
 const GRAB_INSET_Y = 22
 
@@ -46,22 +45,6 @@ const lerpPoint = (a: Point, b: Point, t: number): Point => ({ x: lerp(a.x, b.x,
 const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
-function hasPlayed() {
-  try {
-    return sessionStorage.getItem(STORAGE_KEY) === '1'
-  } catch {
-    return false
-  }
-}
-
-function markPlayed() {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, '1')
-  } catch {
-    // Storage can be blocked; the effect simply won't be remembered.
-  }
-}
-
 /** Screen position of the cursor tip on a card under a given transform. */
 function grabPoint(rect: DOMRect, dx: number, dy: number, rotate: number, scale: number): Point {
   const cx = rect.left + rect.width / 2
@@ -96,7 +79,7 @@ export function CardIntro() {
 
   // Phase 1 — displace every card while the splash still covers the page.
   useIsomorphicLayoutEffect(() => {
-    if (!cursorRef.current || hasPlayed()) return
+    if (!cursorRef.current) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const content = document.querySelector('[data-page-content]')
@@ -261,7 +244,6 @@ export function CardIntro() {
       cursorEl.dataset.drop = 'false'
       document.documentElement.classList.remove('card-intro-active')
       statesRef.current = []
-      markPlayed()
     })
 
     return () => {
