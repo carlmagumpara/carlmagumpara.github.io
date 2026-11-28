@@ -81,7 +81,7 @@
   "projects": [
     {
       "name": "LexMeet",
-      "description": "The official LexMeet web platform.",
+      "description": "The leading online marketplace for Clients and Lawyers",
       "href": "https://lexmeet.com",
       "tags": ["Website", "Web"],
       "images": ["/projects/lexmeet-web.png"]
@@ -102,7 +102,7 @@
     },
     {
       "name": "E-Law Solutions",
-      "description": "The official E-Law Solutions web platform.",
+      "description": "A smart system that empowers lawyers to monitor their day-to-day activities. E-Law Solutions ® lets you focus on your profession and expand your potential through technology and business intelligence solutions.",
       "href": "https://www.e-lawsolutions.com",
       "tags": ["Website", "Web"],
       "images": ["/projects/e-law-solutions.png"]
@@ -110,20 +110,20 @@
     {
       "name": "Neon Drive",
       "description": "A real-time multiplayer driving tag game — start a room, share a six-character code, and drift through a shared city with friends.",
-      "href": "#",
+      "href": "https://car-tag-game-pi.vercel.app",
       "tags": ["Web App", "Multiplayer", "Game"],
       "images": ["/projects/neon-drive-1.png", "/projects/neon-drive-2.png"]
     },
     {
       "name": "Nostalgic Tunes",
       "description": "A personal music library for uploading, organizing, and streaming songs, albums, artists, and genres.",
-      "href": "#",
+      "href": "https://nostalgic-tunes.vercel.app",
       "tags": ["Web App", "Music"],
       "images": ["/projects/nostalgic-tunes.png"]
     },
     {
-      "name": "TechMeetsLegal",
-      "description": "A legal-tech portal helping new and practicing lawyers explore technology for legal practice.",
+      "name": "TECHNOLOGY meets LEGAL PRACTICE",
+      "description": "An interactive scrollytelling site for ELSA (E-Law Solutions App), a web application that helps lawyers and law offices manage their day-to-day activities.",
       "href": "#",
       "tags": ["Website", "Legal Tech"],
       "images": ["/projects/techmeetslegal.png"]
@@ -131,14 +131,14 @@
     {
       "name": "Z-Call",
       "description": "Browser-based peer-to-peer video calls — create a room, share a link, and start talking with no account or download.",
-      "href": "#",
+      "href": "https://z-call.vercel.app",
       "tags": ["Web App", "WebRTC", "Realtime"],
       "images": ["/projects/z-call.png"]
     },
     {
       "name": "Z-Drop",
       "description": "Secure peer-to-peer file sharing with chat — create a private room and send files instantly, with no limits or delays.",
-      "href": "#",
+      "href": "https://z-drop-omega.vercel.app",
       "tags": ["Web App", "P2P", "Realtime"],
       "images": ["/projects/z-drop-1.png", "/projects/z-drop-2.png"]
     }
