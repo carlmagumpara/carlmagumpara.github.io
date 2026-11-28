@@ -7,6 +7,7 @@ import { HeartButton } from '../components/HeartButton'
 import { FloatingHearts } from '../components/FloatingHearts'
 import { LiveCursors } from '../components/LiveCursors'
 import NeonCursor from '../components/NeonCursor'
+import { CardIntro } from '../components/CardIntro'
 import { LivePresenceProvider } from '../components/LivePresence'
 import { AnalyticsTracker } from '../components/AnalyticsTracker'
 import { LiveVisitors } from '../components/LiveVisitors'
@@ -33,6 +34,7 @@ function Layout({ children }: { children: React.ReactNode }) {
         </div>
         <LiveCursors />
         <NeonCursor />
+        <CardIntro />
         <FloatingHearts />
         <div className="visitor-stats">
           <UniqueVisitors />
